@@ -53,12 +53,12 @@ export default function MainLayout({ children }) {
                         <div className="w-[84px] h-[84px] rounded-full overflow-hidden bg-[#222] ring-2 ring-white/10">
                             <img
                                 src="/images/avatar.jpg"
-                                alt="Satria Bahari"
+                                alt="Izza Wildan"
                                 className="w-full h-full object-cover"
                                 onError={e => {
                                     e.target.style.display = 'none';
                                     e.target.parentElement.classList.add('flex','items-center','justify-center');
-                                    e.target.parentElement.innerHTML = '<span class="text-2xl font-bold text-white/30">SB</span>';
+                                    e.target.parentElement.innerHTML = '<span class="text-2xl font-bold text-white/30">IW</span>';
                                 }}
                             />
                         </div>
@@ -66,10 +66,10 @@ export default function MainLayout({ children }) {
 
                     {/* Name */}
                     <div className="flex items-center gap-1.5 mb-0.5">
-                        <span className="text-[14px] font-semibold text-white">Satria Bahari</span>
+                        <span className="text-[14px] font-semibold text-white">Izza Wildan</span>
                         <BadgeCheck className="w-[15px] h-[15px] text-blue-400 fill-blue-400" strokeWidth={0} />
                     </div>
-                    <span className="text-[12px] text-white/35 mb-4">@satriabahari</span>
+                    <span className="text-[12px] text-white/35 mb-4">@izza.wildan</span>
 
                     {/* Toggles */}
                     <div className="flex items-center gap-2">
@@ -137,7 +137,7 @@ export default function MainLayout({ children }) {
                 {/* Footer */}
                 {/* <div className="px-6 py-4 border-t border-white/[0.06]">
                     <p className="text-[11px] text-white/20 text-center">HAK CIPTA © 2026</p>
-                    <p className="text-[11px] text-white/20 text-center leading-relaxed">Satria Bahari. Seluruh hak cipta<br />dilindungi undang-undang.</p>
+                    <p className="text-[11px] text-white/20 text-center leading-relaxed">Izza Wildan. Seluruh hak cipta<br />dilindungi undang-undang.</p>
                 </div> */}
             </aside>
 
@@ -157,7 +157,7 @@ export default function MainLayout({ children }) {
                 >
                     {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                 </button>
-                <span className="text-[13px] font-semibold">Satria Bahari</span>
+                <span className="text-[13px] font-semibold">Izza Wildan</span>
             </div>
 
             {/* ── MAIN CONTENT ── */}
