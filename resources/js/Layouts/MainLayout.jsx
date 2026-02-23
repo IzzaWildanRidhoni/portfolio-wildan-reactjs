@@ -20,11 +20,11 @@ import {
 const navItems = [
     { label: 'Beranda', href: '/', icon: Home },
     { label: 'Tentang', href: '/tentang', icon: User },
-    { label: 'Konten', href: '/konten', icon: Smartphone },
+    // { label: 'Konten', href: '/konten', icon: Smartphone },
     { label: 'Pencapaian', href: '/pencapaian', icon: Award },
     { label: 'Proyek', href: '/proyek', icon: FolderOpen },
     { label: 'Dasbor', href: '/dasbor', icon: LayoutDashboard },
-    { label: 'Ruang Obrolan', href: '/obrolan', icon: MessageSquare },
+    // { label: 'Ruang Obrolan', href: '/obrolan', icon: MessageSquare },
     { label: 'Kontak', href: '/kontak', icon: Phone },
 ];
 
@@ -135,10 +135,10 @@ export default function MainLayout({ children }) {
                 </nav>
 
                 {/* Footer */}
-                <div className="px-6 py-4 border-t border-white/[0.06]">
+                {/* <div className="px-6 py-4 border-t border-white/[0.06]">
                     <p className="text-[11px] text-white/20 text-center">HAK CIPTA © 2026</p>
                     <p className="text-[11px] text-white/20 text-center leading-relaxed">Satria Bahari. Seluruh hak cipta<br />dilindungi undang-undang.</p>
-                </div>
+                </div> */}
             </aside>
 
             {/* Mobile overlay */}
