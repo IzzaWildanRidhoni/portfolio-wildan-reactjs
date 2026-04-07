@@ -209,15 +209,17 @@ export default function Projects({ projects }) {
                                     )}
 
                                     {project.demo_url && (
-                                        <a
-                                            href={project.demo_url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            onClick={e => e.stopPropagation()}
-                                            className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-black/40 border border-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation(); // Mencegah navigasi ke /proyek/:id
+                                                window.open(project.demo_url, '_blank', 'noopener,noreferrer');
+                                            }}
+                                            className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-black/40 border border-white/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/60 focus:outline-none focus:ring-2 focus:ring-white/20"
+                                            aria-label={`Open demo: ${project.title}`}
                                         >
                                             <ExternalLink className="w-3.5 h-3.5 text-white" />
-                                        </a>
+                                        </button>
                                     )}
                                 </div>
 
