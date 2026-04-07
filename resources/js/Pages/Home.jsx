@@ -3,56 +3,121 @@ import MainLayout from '@/Layouts/MainLayout';
 import { HomePageSkeleton } from '@/Components/Skeleton';
 import { MapPin, Monitor } from 'lucide-react';
 
+// Pakai simpleicons CDN — sudah terbukti jalan di project ini sebelumnya
+// Format URL: https://cdn.simpleicons.org/{slug}/{hex-color}
 const staticSkills = [
-    { id: 1,  name: 'HTML5',      slug: 'html5',       color: '#E34F26' },
-    { id: 2,  name: 'CSS',       slug: 'css',         color: '#1572B6' },
-    { id: 3,  name: 'Bootstrap',  slug: 'bootstrap',    color: '#7952B3' },
-    { id: 4,  name: 'Tailwind',   slug: 'tailwindcss',  color: '#06B6D4' },
-    { id: 5,  name: 'JavaScript', slug: 'javascript',   color: '#F7DF1E' },
-    { id: 6,  name: 'TypeScript', slug: 'typescript',   color: '#3178C6' },
-    { id: 7,  name: 'React',      slug: 'react',        color: '#61DAFB' },
-    { id: 8,  name: 'Vue.js',     slug: 'vuedotjs',     color: '#4FC08D' },
-    { id: 9,  name: 'Astro',      slug: 'astro',        color: '#FF5D01' },
-    { id: 10, name: 'Next.js',    slug: 'nextdotjs',    color: '#fff' },
-    { id: 11, name: 'Vite',       slug: 'vite',         color: '#646CFF' },
-    { id: 12, name: 'Nuxt',       slug: 'nuxtdotjs',    color: '#00DC82' },
-    { id: 13, name: 'Svelte',     slug: 'svelte',       color: '#FF3E00' },
-    { id: 14, name: 'Redux',      slug: 'redux',        color: '#764ABC' },
-    { id: 15, name: 'Prisma',     slug: 'prisma',       color: '#2D3748' },
-    { id: 16, name: 'MobX',       slug: 'mobx',         color: '#FF9955' },
-    { id: 17, name: 'Gatsby',     slug: 'gatsby',       color: '#663399' },
-    { id: 18, name: 'Next.js',    slug: 'nextdotjs',    color: '#fff' },
-    { id: 19, name: 'Figma',      slug: 'figma',        color: '#F24E1E' },
-    { id: 20, name: 'Shopify',    slug: 'shopify',      color: '#96BF48' },
-    { id: 21, name: 'WooComm.',   slug: 'woocommerce',  color: '#7F54B3' },
-    { id: 22, name: 'Strapi',     slug: 'strapi',       color: '#2F2E8B' },
-    { id: 23, name: 'Payload',    slug: 'payloadcms',   color: '#fff' },
-    { id: 24, name: 'Sanity',     slug: 'sanity',       color: '#F03E2F' },
-    { id: 25, name: 'Supabase',   slug: 'supabase',     color: '#3ECF8E' },
-    { id: 26, name: 'Firebase',   slug: 'firebase',     color: '#FFCA28' },
-    { id: 27, name: 'Golang',     slug: 'go',           color: '#00ADD8' },
-    { id: 28, name: 'Laravel',    slug: 'laravel',      color: '#FF2D20' },
-    { id: 29, name: 'Kotlin',     slug: 'kotlin',       color: '#7F52FF' },
-    { id: 30, name: 'Express',    slug: 'express',      color: '#fff' },
-    { id: 31, name: 'PHP',        slug: 'php',          color: '#777BB4' },
-    { id: 32, name: 'Node.js',    slug: 'nodedotjs',    color: '#339933' },
-    { id: 33, name: 'MySQL',      slug: 'mysql',        color: '#4479A1' },
-    { id: 34, name: 'Supabase',   slug: 'supabase',     color: '#3ECF8E' },
-    { id: 35, name: 'Docker',     slug: 'docker',       color: '#2496ED' },
-    { id: 36, name: 'npm',        slug: 'npm',          color: '#CB3837' },
-    { id: 37, name: 'GitHub',     slug: 'github',       color: '#fff' },
+    { id: 1,  name: 'HTML5',      slug: 'html5',                color: 'E34F26' },
+    // { id: 2,  name: 'CSS3',       slug: 'css3',                 color: '1572B6' },
+    { id: 3,  name: 'Bootstrap',  slug: 'bootstrap',            color: '7952B3' },
+    { id: 4,  name: 'Tailwind',   slug: 'tailwindcss',          color: '06B6D4' },
+    { id: 5,  name: 'JavaScript', slug: 'javascript',           color: 'F7DF1E' },
+    { id: 6,  name: 'TypeScript', slug: 'typescript',           color: '3178C6' },
+    { id: 7,  name: 'React',      slug: 'react',                color: '61DAFB' },
+    { id: 8,  name: 'Vue.js',     slug: 'vuedotjs',             color: '4FC08D' },
+    { id: 9,  name: 'Next.js',    slug: 'nextdotjs',            color: 'ffffff' },
+    // { id: 10, name: 'Nuxt',       slug: 'nuxtdotjs',            color: '00DC82' },
+    { id: 11, name: 'Svelte',     slug: 'svelte',               color: 'FF3E00' },
+    { id: 12, name: 'Redux',      slug: 'redux',                color: '764ABC' },
+    { id: 13, name: 'Figma',      slug: 'figma',                color: 'F24E1E' },
+    { id: 14, name: 'Vite',       slug: 'vite',                 color: '646CFF' },
+    { id: 15, name: 'Gatsby',     slug: 'gatsby',               color: '663399' },
+    { id: 16, name: 'Prisma',     slug: 'prisma',               color: 'ffffff' },
+    { id: 17, name: 'Shopify',    slug: 'shopify',              color: '96BF48' },
+    { id: 18, name: 'Strapi',     slug: 'strapi',               color: '4945FF' },
+    { id: 19, name: 'Supabase',   slug: 'supabase',             color: '3ECF8E' },
+    { id: 20, name: 'Firebase',   slug: 'firebase',             color: 'FFCA28' },
+    { id: 21, name: 'Go',         slug: 'go',                   color: '00ADD8' },
+    { id: 22, name: 'Laravel',    slug: 'laravel',              color: 'FF2D20' },
+    { id: 23, name: 'Kotlin',     slug: 'kotlin',               color: '7F52FF' },
+    { id: 24, name: 'Express',    slug: 'express',              color: 'ffffff' },
+    { id: 25, name: 'PHP',        slug: 'php',                  color: '777BB4' },
+    { id: 26, name: 'Node.js',    slug: 'nodedotjs',            color: '339933' },
+    { id: 27, name: 'MySQL',      slug: 'mysql',                color: '4479A1' },
+    { id: 28, name: 'Docker',     slug: 'docker',               color: '2496ED' },
+    { id: 29, name: 'GitHub',     slug: 'github',               color: 'ffffff' },
+    { id: 30, name: 'npm',        slug: 'npm',                  color: 'CB3837' },
+    { id: 31, name: 'MongoDB',    slug: 'mongodb',              color: '47A248' },
+    { id: 32, name: 'PostgreSQL', slug: 'postgresql',           color: '4169E1' },
+    { id: 33, name: 'Redis',      slug: 'redis',                color: 'FF4438' },
+    { id: 34, name: 'GraphQL',    slug: 'graphql',              color: 'E10098' },
+    { id: 35, name: 'Linux',      slug: 'linux',                color: 'FCC624' },
+    { id: 36, name: 'Git',        slug: 'git',                  color: 'F05032' },
+    { id: 37, name: 'Nginx',      slug: 'nginx',                color: '009639' },
 ];
+
+const marqueeStyles = `
+    @keyframes marquee-left {
+        0%   { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+    @keyframes marquee-right {
+        0%   { transform: translateX(-50%); }
+        100% { transform: translateX(0); }
+    }
+`;
+
+function SkillItem({ skill }) {
+    // background = warna icon dengan opacity rendah
+    const bg = `#${skill.color}18`;
+
+    return (
+        <div className="group relative mx-[6px] flex-shrink-0">
+            <div
+                className="w-[52px] h-[52px] rounded-full flex items-center justify-center border border-white/[0.08] group-hover:border-white/20 transition-all duration-200 cursor-default group-hover:scale-110"
+                style={{ backgroundColor: bg }}
+            >
+                <img
+                    src={`https://cdn.simpleicons.org/${skill.slug}/${skill.color}`}
+                    alt={skill.name}
+                    className="w-6 h-6 object-contain"
+                    loading="lazy"
+                    onError={e => { e.target.style.display = 'none'; }}
+                />
+            </div>
+            {/* Tooltip */}
+            <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 rounded-md bg-[#1f1f1f] border border-white/10 text-[11px] text-white whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-10">
+                {skill.name}
+            </div>
+        </div>
+    );
+}
+
+function MarqueeRow({ skills, direction = 'left', speed = 40 }) {
+    const items = [...skills, ...skills];
+    const animationName = direction === 'right' ? 'marquee-right' : 'marquee-left';
+
+    return (
+        <div
+            className="relative overflow-hidden py-1"
+            style={{
+                maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
+                WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
+            }}
+        >
+            <div
+                className="flex w-max"
+                style={{ animation: `${animationName} ${speed}s linear infinite` }}
+                onMouseEnter={e => (e.currentTarget.style.animationPlayState = 'paused')}
+                onMouseLeave={e => (e.currentTarget.style.animationPlayState = 'running')}
+            >
+                {items.map((skill, idx) => (
+                    <SkillItem key={`${direction}-${skill.id}-${idx}`} skill={skill} />
+                ))}
+            </div>
+        </div>
+    );
+}
 
 export default function Home({ profile, skills }) {
     const [loading, setLoading] = useState(true);
 
-    const displaySkills = skills?.length ? skills : staticSkills;
-    const displayProfile =  {
+    // const displaySkills = skills?.length ? skills : staticSkills;
+    const displaySkills =  staticSkills;
+    const displayProfile = {
         name: 'Izza Wildan Ridhoni',
-        location: 'Temanggung,Jawa Tengah, Indonesia',
         work_type: 'Onsite',
         bio: 'Seorang Fullstack Web Developer yang berfokus pada pengembangan aplikasi web modern dan scalable menggunakan Laravel sebagai backend dan React JS sebagai frontend. Berpengalaman dalam membangun sistem end-to-end dengan arsitektur yang rapi, performa optimal, dan user experience yang baik',
-        bio2: 'Fokus saya adalah merancang arsitektur perangkat lunak yang terstruktur dengan baik, mudah dipelihara, dan selaras dengan tujuan bisnis. ',
+        bio2: 'Fokus saya adalah merancang arsitektur perangkat lunak yang terstruktur dengan baik, mudah dipelihara, dan selaras dengan tujuan bisnis.',
     };
 
     useEffect(() => {
@@ -66,6 +131,8 @@ export default function Home({ profile, skills }) {
 
     return (
         <MainLayout>
+            <style>{marqueeStyles}</style>
+
             <div className="space-y-8">
 
                 {/* ── HERO ── */}
@@ -74,12 +141,10 @@ export default function Home({ profile, skills }) {
                         Halo, saya {displayProfile.name}
                     </h1>
 
-                    {/* Location + work type */}
                     <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 text-[13px] text-white/45 mb-5">
                         <div className="flex items-center gap-1.5">
-                            <span className="text-white/30">•</span>
                             <MapPin className="w-3.5 h-3.5" />
-                            <span>Berdomisili di Temanggung, Jawa Tengah</span>
+                            <span>Temanggung, Jawa Tengah</span>
                             <span className="inline-flex items-center justify-center w-4 h-3.5 rounded-[2px] bg-blue-600 text-white text-[9px] font-bold leading-none">ID</span>
                         </div>
                         <div className="flex items-center gap-1.5">
@@ -89,10 +154,9 @@ export default function Home({ profile, skills }) {
                         </div>
                     </div>
 
-                    {/* Bio paragraphs */}
                     <div className="space-y-4 text-[13.5px] text-white/60 leading-[1.75]">
                         <p>{displayProfile.bio}</p>
-                        <p>{displayProfile.bio2 || ''}</p>
+                        <p>{displayProfile.bio2}</p>
                     </div>
                 </div>
 
@@ -107,40 +171,11 @@ export default function Home({ profile, skills }) {
                     </div>
                     <p className="text-[13px] text-white/40 mb-6">Keahlian profesional saya.</p>
 
-                    {/* Grid of skill icons */}
-                    <div className="flex flex-wrap gap-[10px]">
-                        {displaySkills.map((skill) => (
-                            <div key={skill.id} className="group relative">
-                                <div
-                                    className="w-[50px] h-[50px] rounded-full flex items-center justify-center border border-white/[0.08] hover:border-white/20 transition-all duration-200 cursor-default hover:scale-110"
-                                    style={{ backgroundColor: (skill.color || '#fff') + '18' }}
-                                >
-                                    <img
-                                        src={`https://cdn.simpleicons.org/${skill.slug || skill.name.toLowerCase()}`}
-                                        alt={skill.name}
-                                        className="w-6 h-6 object-contain"
-                                        onError={e => { e.target.style.display = 'none'; }}
-                                    />
-                                </div>
-                                {/* Tooltip */}
-                                <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 rounded-md bg-[#1f1f1f] border border-white/10 text-[11px] text-white whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                                    {skill.name}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* GitHub icon row */}
-                    <div className="mt-4">
-                        <div className="group relative inline-block">
-                            <div className="w-[50px] h-[50px] rounded-full flex items-center justify-center border border-white/[0.08] hover:border-white/20 bg-white/[0.04] transition-all duration-200 cursor-default hover:scale-110">
-                                <img
-                                    src="https://cdn.simpleicons.org/github/ffffff"
-                                    alt="GitHub"
-                                    className="w-6 h-6 object-contain"
-                                />
-                            </div>
-                        </div>
+                    <div className="space-y-3">
+                        {/* Baris 1 — bergerak ke kanan */}
+                        <MarqueeRow skills={displaySkills} direction="left" speed={45} />
+                        {/* Baris 2 — bergerak ke kiri */}
+                        <MarqueeRow skills={displaySkills} direction="right" speed={45} />
                     </div>
                 </div>
 
