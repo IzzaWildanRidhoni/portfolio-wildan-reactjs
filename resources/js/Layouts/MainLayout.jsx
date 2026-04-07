@@ -36,10 +36,11 @@ export default function MainLayout({ children }) {
         href === '/' ? url === '/' : url.startsWith(href);
 
     return (
-        <div className="flex min-h-screen bg-background text-foreground font-sans">
+        <div className="flex min-h-screen bg-background text-foreground font-sans px-4 lg:px-20">
+        
 
             {/* ── SIDEBAR (desktop only) ── */}
-            <aside className="hidden lg:flex flex-col w-[255px] bg-card border-r border-border sticky top-0 h-screen">
+            <aside className="hidden lg:flex flex-col w-[255px] bg-transparent  border-border sticky top-0 h-screen">
 
                 {/* Profile */}
                 <div className="flex flex-col items-center pt-7 pb-5 px-5 border-b border-border">
@@ -178,7 +179,7 @@ export default function MainLayout({ children }) {
 
              {/* ── MAIN CONTENT ── */}
             <main className="flex-1 min-h-screen pb-[72px] lg:pb-0 overflow-x-hidden">
-                <div className="max-w-[780px] mx-auto px-5 lg:px-10 py-8 w-full">
+                <div className=" mx-auto px-5 lg:px-10 py-8 w-full">
                     {children}
                 </div>
             </main>
