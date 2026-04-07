@@ -3,60 +3,6 @@ import MainLayout from '@/Layouts/MainLayout';
 import { AboutPageSkeleton } from '@/Components/Skeleton';
 import { Briefcase, GraduationCap, ChevronRight, MapPin } from 'lucide-react';
 
-const staticExperiences = [
-    {
-        id: 1,
-        title: 'Backend Golang Developer',
-        company: 'Pt. Affan Technology Indonesia (Parto.id)',
-        logo: null,
-        location: 'Jambi, Indonesia',
-        start_date: 'Jul 2025',
-        end_date: 'Sep 2025',
-        duration: '2 bulan',
-        type: 'Internship',
-        work_mode: 'Hybrid',
-        description: 'Mengembangkan REST API menggunakan Golang untuk sistem internal perusahaan, termasuk modul manajemen pengguna, notifikasi, dan integrasi layanan pihak ketiga.',
-    },
-    {
-        id: 2,
-        title: 'Head of Technology in the Research and Technology Division',
-        company: 'Himpunan Mahasiswa Sistem Informasi Universitas Jambi (HIMASI UNJA)',
-        logo: null,
-        location: 'Jambi, Indonesia',
-        start_date: 'Dec 2024',
-        end_date: 'Dec 2025',
-        duration: '1 tahun',
-        type: 'Part-time',
-        work_mode: 'Onsite',
-        description: 'Memimpin divisi riset dan teknologi, mengkoordinasi proyek pengembangan software untuk keperluan organisasi mahasiswa.',
-    },
-    {
-        id: 3,
-        title: 'Mobile Development Cohort',
-        company: 'Bangkit Academy led by Google, Tokopedia, Gojek & Traveloka',
-        logo: null,
-        location: 'Remote',
-        start_date: 'Sep 2024',
-        end_date: 'Dec 2024',
-        duration: '3 bulan',
-        type: 'Part-time',
-        work_mode: 'Remote',
-        description: 'Program intensif pengembangan aplikasi mobile Android menggunakan Kotlin, mencakup arsitektur MVVM, Jetpack Compose, dan integrasi dengan API backend.',
-    },
-    {
-        id: 4,
-        title: 'Mobile Developer',
-        company: 'Pt. Amanah Karya Indonesia (Amanah Corp)',
-        logo: null,
-        location: 'Depok, Indonesia',
-        start_date: 'Oct 2024',
-        end_date: 'Dec 2024',
-        duration: '2 bulan',
-        type: 'Part-time',
-        work_mode: 'Remote',
-        description: 'Membangun aplikasi mobile Android untuk klien perusahaan dengan teknologi Kotlin dan Jetpack.',
-    },
-];
 
 const staticEducations = [
     {
@@ -183,8 +129,7 @@ function EducationCard({ edu }) {
 export default function About({ profile, experiences, educations }) {
     const [loading, setLoading] = useState(true);
 
-    // const displayExperiences = experiences?.length ? experiences : staticExperiences;
-    const displayExperiences = staticExperiences;
+    const displayExperiences =  experiences ;
     // const displayEducations = educations?.length ? educations : staticEducations;
     const displayEducations =  staticEducations;
     const displayProfile = profile || { name: 'Izza Wildan Ridhoni' };
