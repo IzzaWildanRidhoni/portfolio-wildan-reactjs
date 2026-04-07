@@ -115,15 +115,16 @@ const techColors = {
     nodedotjs:   '#339933',
 };
 
-// Gambar default dari Unsplash — konsisten per id project
-function getDefaultThumbnail(id) {
-    const seeds = [
-        'coding', 'technology', 'software', 'computer', 'programming',
-        'workspace', 'developer', 'digital', 'design', 'startup',
-    ];
-    const seed = seeds[(id - 1) % seeds.length];
-    return `https://source.unsplash.com/600x350/?${seed}&sig=${id}`;
+// Simple placeholder dari placehold.co dengan satu warna konsisten
+function getDefaultThumbnail(text) {
+    const bgColor = '0f172a';      // slate-900
+    const textColor = '64748b';    // slate-500
+    const font = 'roboto';
+    const fontSize = '20';
+    
+    return `https://placehold.co/600x350/${bgColor}/${textColor}?text=${text}&font=${font}&font_size=${fontSize}`;
 }
+
 
 function TechIcon({ slug }) {
     const color = techColors[slug] || '#ffffff';
@@ -143,18 +144,32 @@ function TechIcon({ slug }) {
     );
 }
 
+
 function ProjectThumbnail({ project }) {
-    const src = project.thumbnail || getDefaultThumbnail(project.id);
+    const hasCustomThumbnail = !!project.thumbnail;
+    const [imgError, setImgError] = useState(false);
+
+    // Tentukan teks placeholder berdasarkan state
+   const placeholderText = imgError
+        ? 'Image Error'  
+        : 'Coming Soon ';
+    
+    // Gunakan custom thumbnail atau placeholder
+    const src = hasCustomThumbnail && !imgError 
+        ? project.thumbnail 
+        : getDefaultThumbnail(placeholderText);
 
     return (
         <img
             src={src}
             alt={project.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            onError={e => {
-                // Fallback kalau Unsplash tidak bisa diakses
-                e.target.src = `https://picsum.photos/seed/${project.id}/600/350`;
-            }}
+            loading="lazy"
+            className={`w-full h-full transition-transform duration-300 ${
+                hasCustomThumbnail && !imgError
+                    ? 'object-cover group-hover:scale-105' 
+                    : 'object-cover'
+            }`}
+            onError={() => setImgError(true)}
         />
     );
 }
