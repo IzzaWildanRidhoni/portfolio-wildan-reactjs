@@ -15,6 +15,8 @@ class DatabaseSeeder extends Seeder
             EducationSeeder::class,
             ProjectSeeder::class,
             AchievementSeeder::class,
+            SocialLinkSeeder::class,
+            MessageSeeder::class,
         ]);
     }
 }
