@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
+import { Link } from '@inertiajs/react';
 import MainLayout from '@/Layouts/MainLayout';
 import { HomePageSkeleton } from '@/Components/Skeleton';
-import { MapPin, Monitor } from 'lucide-react';
+import { MapPin, Monitor, Rocket, ArrowRight } from 'lucide-react';
 
 // Pakai simpleicons CDN — sudah terbukti jalan di project ini sebelumnya
 // Format URL: https://cdn.simpleicons.org/{slug}/{hex-color}
@@ -138,7 +139,7 @@ export default function Home({ profile, skills }) {
             {/* ── WRAPPER UTAMA DENGAN overflow-x-hidden ── */}
             <div className="space-y-8 w-full overflow-x-hidden">
 
-                {/* ── HERO ── */}
+                {/* ── HERO ─ */}
                 <div className="w-full">
                     <h1 className="text-[28px] font-bold text-white mb-3 tracking-tight">
                         Halo, saya {displayProfile.name}
@@ -182,6 +183,45 @@ export default function Home({ profile, skills }) {
                             {/* Baris 2 — bergerak ke kiri */}
                             <MarqueeRow skills={displaySkills} direction="right" speed={45} />
                         </div>
+                    </div>
+                </div>
+
+                {/* Divider */}
+                <div className="border-t border-white/[0.07]" />
+
+                {/* ── WHAT I'VE BEEN WORKING ON ── */}
+                <div className="w-full">
+                    <h2 className="text-[18px] font-bold text-white tracking-tight mb-4">
+                        What I've Been Working On
+                    </h2>
+                    
+                    <p className="text-[13.5px] text-white/60 leading-[1.75] mb-6">
+                        I assist brands, companies, institutions, and startups in creating exceptional digital experiences for their businesses through strategic development services.
+                    </p>
+
+                    {/* Contact Card */}
+                    <div className="rounded-2xl bg-card/50 border border-white/[0.08] p-6 backdrop-blur-sm">
+                        <div className="flex items-start gap-3 mb-4">
+                            <div className="p-2 rounded-lg bg-primary/10">
+                                <Rocket className="w-5 h-5 text-primary" />
+                            </div>
+                            <div>
+                                <h3 className="text-[16px] font-semibold text-white mb-2">
+                                    Lets work together!
+                                </h3>
+                                <p className="text-[13px] text-white/60 leading-[1.6]">
+                                    I'm open for freelance projects, feel free to email me to see how can we collaborate.
+                                </p>
+                            </div>
+                        </div>
+
+                        <Link
+                            href="/kontak"
+                            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-[13px] font-medium transition-all duration-200 hover:scale-105 active:scale-95"
+                        >
+                            Contact me
+                            <ArrowRight className="w-4 h-4" />
+                        </Link>
                     </div>
                 </div>
 
