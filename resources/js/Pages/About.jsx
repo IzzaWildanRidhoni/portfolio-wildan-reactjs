@@ -183,8 +183,10 @@ function EducationCard({ edu }) {
 export default function About({ profile, experiences, educations }) {
     const [loading, setLoading] = useState(true);
 
-    const displayExperiences = experiences?.length ? experiences : staticExperiences;
-    const displayEducations = educations?.length ? educations : staticEducations;
+    // const displayExperiences = experiences?.length ? experiences : staticExperiences;
+    const displayExperiences = staticExperiences;
+    // const displayEducations = educations?.length ? educations : staticEducations;
+    const displayEducations =  staticEducations;
     const displayProfile = profile || { name: 'Izza Wildan Ridhoni' };
 
     useEffect(() => {
