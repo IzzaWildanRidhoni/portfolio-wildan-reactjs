@@ -148,11 +148,11 @@ export default function MainLayout({ children }) {
                                     ${active ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-50'}
                                 `} />
 
-                                <Icon className={`
-                                    w-[15px] h-[15px] flex-shrink-0 transition-all duration-200
+                              <Icon className={`
+                                    w-[15px] h-[15px] flex-shrink-0 origin-center transition-all duration-300
                                     ${active
                                         ? 'text-primary'
-                                        : 'text-muted-foreground group-hover:text-foreground group-hover:scale-110'
+                                        : 'text-muted-foreground group-hover:text-foreground group-hover:scale-110 group-hover:-rotate-12'
                                     }
                                 `} />
 
