@@ -49,7 +49,7 @@ export default function MainLayout({ children }) {
                         <div className="p-[2px] rounded-full bg-gradient-to-br from-primary to-primary/60">
                             <div className="w-[76px] h-[76px] rounded-full overflow-hidden bg-card">
                                 <img
-                                    src="/images/avatar.jpg"
+                                    src="/images/avatar.jpeg"
                                     alt="Izza Wildan"
                                     className="w-full h-full object-cover"
                                     onError={e => {
