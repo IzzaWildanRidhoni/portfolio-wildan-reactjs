@@ -81,14 +81,13 @@ function SkillItem({ skill }) {
         </div>
     );
 }
-
 function MarqueeRow({ skills, direction = 'left', speed = 40 }) {
     const items = [...skills, ...skills];
     const animationName = direction === 'right' ? 'marquee-right' : 'marquee-left';
 
     return (
         <div
-            className="relative overflow-hidden py-1"
+            className="relative overflow-hidden py-1 w-full"
             style={{
                 maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
                 WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
@@ -96,7 +95,10 @@ function MarqueeRow({ skills, direction = 'left', speed = 40 }) {
         >
             <div
                 className="flex w-max"
-                style={{ animation: `${animationName} ${speed}s linear infinite` }}
+                style={{ 
+                    animation: `${animationName} ${speed}s linear infinite`,
+                    willChange: 'transform' // Optimasi performa animasi
+                }}
                 onMouseEnter={e => (e.currentTarget.style.animationPlayState = 'paused')}
                 onMouseLeave={e => (e.currentTarget.style.animationPlayState = 'running')}
             >
@@ -108,11 +110,11 @@ function MarqueeRow({ skills, direction = 'left', speed = 40 }) {
     );
 }
 
+// Tambahkan overflow-x-hidden pada container utama Home
 export default function Home({ profile, skills }) {
     const [loading, setLoading] = useState(true);
 
-    // const displaySkills = skills?.length ? skills : staticSkills;
-    const displaySkills =  staticSkills;
+    const displaySkills = staticSkills;
     const displayProfile = {
         name: 'Izza Wildan Ridhoni',
         work_type: 'Onsite',
@@ -133,10 +135,11 @@ export default function Home({ profile, skills }) {
         <MainLayout>
             <style>{marqueeStyles}</style>
 
-            <div className="space-y-8">
+            {/* ── WRAPPER UTAMA DENGAN overflow-x-hidden ── */}
+            <div className="space-y-8 w-full overflow-x-hidden">
 
                 {/* ── HERO ── */}
-                <div>
+                <div className="w-full">
                     <h1 className="text-[28px] font-bold text-white mb-3 tracking-tight">
                         Halo, saya {displayProfile.name}
                     </h1>
@@ -164,18 +167,21 @@ export default function Home({ profile, skills }) {
                 <div className="border-t border-white/[0.07]" />
 
                 {/* ── SKILLS ── */}
-                <div>
+                <div className="w-full">
                     <div className="flex items-center gap-2 mb-1.5">
                         <span className="text-[13px] text-white/40 font-mono">&lt;/&gt;</span>
                         <h2 className="text-[18px] font-bold text-white tracking-tight">Keahlian</h2>
                     </div>
                     <p className="text-[13px] text-white/40 mb-6">Keahlian profesional saya.</p>
 
-                    <div className="space-y-3">
-                        {/* Baris 1 — bergerak ke kanan */}
-                        <MarqueeRow skills={displaySkills} direction="left" speed={45} />
-                        {/* Baris 2 — bergerak ke kiri */}
-                        <MarqueeRow skills={displaySkills} direction="right" speed={45} />
+                    {/* Container marquee dengan overflow terkontrol */}
+                    <div className="w-full overflow-hidden -mx-1">
+                        <div className="space-y-3">
+                            {/* Baris 1 — bergerak ke kanan */}
+                            <MarqueeRow skills={displaySkills} direction="left" speed={45} />
+                            {/* Baris 2 — bergerak ke kiri */}
+                            <MarqueeRow skills={displaySkills} direction="right" speed={45} />
+                        </div>
                     </div>
                 </div>
 

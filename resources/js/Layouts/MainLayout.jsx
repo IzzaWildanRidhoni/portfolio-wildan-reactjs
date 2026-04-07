@@ -176,9 +176,9 @@ export default function MainLayout({ children }) {
                 </div>
             </aside>
 
-            {/* ── MAIN CONTENT ── */}
-            <main className="flex-1 min-h-screen pb-[72px] lg:pb-0">
-                <div className="max-w-[780px] mx-auto px-5 lg:px-10 py-8">
+             {/* ── MAIN CONTENT ── */}
+            <main className="flex-1 min-h-screen pb-[72px] lg:pb-0 overflow-x-hidden">
+                <div className="max-w-[780px] mx-auto px-5 lg:px-10 py-8 w-full">
                     {children}
                 </div>
             </main>
