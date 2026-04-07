@@ -4,31 +4,6 @@ import { AboutPageSkeleton } from '@/Components/Skeleton';
 import { Briefcase, GraduationCap, ChevronRight, MapPin } from 'lucide-react';
 
 
-const staticEducations = [
-    {
-        id: 1,
-        institution: 'Universitas Jambi',
-        logo: null,
-        degree: "Bachelor's degree",
-        field: 'Information Systems, (S.Kom)',
-        gpa: '3.80/4.00',
-        start_year: '2022',
-        end_year: '2026',
-        location: 'Jambi, Indonesia',
-    },
-    {
-        id: 2,
-        institution: 'SMAN 1 Tanjung Jabung Barat',
-        logo: null,
-        degree: 'Senior High School',
-        field: 'Science',
-        gpa: null,
-        start_year: '2019',
-        end_year: '2022',
-        location: 'Tanjung Jabung Barat, Jambi, Indonesia',
-    },
-];
-
 function ExperienceCard({ exp }) {
     const [open, setOpen] = useState(false);
 
@@ -131,7 +106,7 @@ export default function About({ profile, experiences, educations }) {
 
     const displayExperiences =  experiences ;
     // const displayEducations = educations?.length ? educations : staticEducations;
-    const displayEducations =  staticEducations;
+    const displayEducations =  educations;
     const displayProfile = profile || { name: 'Izza Wildan Ridhoni' };
 
     useEffect(() => {
