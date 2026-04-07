@@ -9,7 +9,7 @@ const socialLinks = [
         label: 'Tetap Terhubung',
         desc: 'Hubungi saya melalui email untuk pertanyaan atau kolaborasi.',
         action: 'Pergi ke Gmail',
-        href: 'mailto:satriabahari@gmail.com',
+        href: 'mailto:izzawildan@gmail.com',
         full: true,
         gradient: 'linear-gradient(135deg, #c62828 0%, #b71c1c 100%)',
         icon: (

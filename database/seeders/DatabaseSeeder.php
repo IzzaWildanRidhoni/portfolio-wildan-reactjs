@@ -14,19 +14,19 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         Profile::create([
-            'name' => 'Satria Bahari',
-            'username' => 'satriabahari',
+            'name' => 'Izza Wildan ',
+            'username' => 'izzawildan',
             'title' => 'Software Engineer',
             'location' => 'Jambi, Indonesia',
             'work_type' => 'Onsite',
             'bio' => 'Seorang Software Engineer dan kreator konten coding yang berdedikasi untuk membangun solusi digital yang berdampak. Saya spesialis dalam pengembangan platform web yang skalabel dan aplikasi mobile menggunakan tech stack modern, terutama Next.js, TypeScript, dan Native Android (Kotlin).',
             'avatar' => '/images/avatar.jpg',
-            'email' => 'satriabahari@gmail.com',
+            'email' => 'izzawildan@gmail.com',
             'whatsapp' => '+6281234567890',
-            'github' => 'https://github.com/satriabahari',
-            'linkedin' => 'https://linkedin.com/in/satriabahari',
-            'instagram' => 'https://instagram.com/satriabahari',
-            'tiktok' => 'https://tiktok.com/@satriabahari',
+            'github' => 'https://github.com/izzawildan',
+            'linkedin' => 'https://linkedin.com/in/izzawildan',
+            'instagram' => 'https://instagram.com/izzawildan',
+            'tiktok' => 'https://tiktok.com/@izzawildan',
             'is_verified' => true,
         ]);
 
@@ -52,31 +52,31 @@ class DatabaseSeeder extends Seeder
         }
 
         Experience::create([
-            'title' => 'Backend Golang Developer',
-            'company' => 'Pt. Affan Technology Indonesia (Parto.id)',
-            'location' => 'Jambi, Indonesia',
-            'start_date' => 'Jul 2025',
-            'end_date' => 'Sep 2025',
-            'duration' => '2 bulan',
+            'title' => 'Fullstack Developer',
+            'company' => 'Pt. Git Solution',
+            'location' => 'Yogyakarta, Indonesia',
+            'start_date' => 'Januari 2019',
+            'end_date' => 'Mei 2019',
+            'duration' => '4 bulan',
             'type' => 'Internship',
-            'work_mode' => 'Hybrid',
+            'work_mode' => 'Onsite',
             'order' => 0,
         ]);
 
         Experience::create([
-            'title' => 'Head of Technology',
-            'company' => 'HIMASI UNJA',
-            'location' => 'Jambi, Indonesia',
-            'start_date' => 'Dec 2024',
-            'end_date' => 'Dec 2025',
-            'duration' => '1 tahun',
-            'type' => 'Part-time',
+            'title' => 'Fullstack Developer ',
+            'company' => 'PT Baracipta Esa Engineering',
+            'location' => 'Yogyakarta, Indonesia',
+            'start_date' => 'Juli 2023',
+            'end_date' => 'Desember 2023',
+            'duration' => '6 Bulan',
+            'type' => 'Internship',
             'work_mode' => 'Onsite',
             'order' => 1,
         ]);
 
         Project::create([
-            'title' => 'satriabahari.my.id',
+            'title' => 'izzawildan.my.id',
             'description' => 'Personal website & portfolio, built from scratch using Next.js, TypeScript, Tailwind CSS.',
             'thumbnail' => '/images/projects/portfolio.png',
             'tech_stack' => ['TypeScript', 'Tailwind', 'React', 'Next.js'],

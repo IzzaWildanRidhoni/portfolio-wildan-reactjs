@@ -5,7 +5,7 @@ import { MapPin, Monitor } from 'lucide-react';
 
 const staticSkills = [
     { id: 1,  name: 'HTML5',      slug: 'html5',       color: '#E34F26' },
-    { id: 2,  name: 'CSS3',       slug: 'css3',         color: '#1572B6' },
+    { id: 2,  name: 'CSS',       slug: 'css',         color: '#1572B6' },
     { id: 3,  name: 'Bootstrap',  slug: 'bootstrap',    color: '#7952B3' },
     { id: 4,  name: 'Tailwind',   slug: 'tailwindcss',  color: '#06B6D4' },
     { id: 5,  name: 'JavaScript', slug: 'javascript',   color: '#F7DF1E' },
@@ -47,12 +47,12 @@ export default function Home({ profile, skills }) {
     const [loading, setLoading] = useState(true);
 
     const displaySkills = skills?.length ? skills : staticSkills;
-    const displayProfile = profile || {
-        name: 'Satria Bahari',
-        location: 'Jambi, Indonesia',
+    const displayProfile =  {
+        name: 'Izza Wildan Ridhoni',
+        location: 'Temanggung,Jawa Tengah, Indonesia',
         work_type: 'Onsite',
-        bio: 'Seorang Software Engineer dan kreator konten coding yang berdedikasi untuk membangun solusi digital yang berdampak. Saya spesialis dalam pengembangan platform web yang skalabel dan aplikasi mobile menggunakan tech stack modern, terutama Next.js, TypeScript, dan Native Android (Kotlin).',
-        bio2: 'Fokus saya adalah merancang arsitektur perangkat lunak yang terstruktur dengan baik, mudah dipelihara, dan selaras dengan tujuan bisnis. Saya memadukan keahlian teknis dengan komunikasi proaktif dan kepemimpinan untuk memastikan setiap proyek memberikan kejelasan logis dan dampak nyata di dunia nyata.',
+        bio: 'Seorang Fullstack Web Developer yang berfokus pada pengembangan aplikasi web modern dan scalable menggunakan Laravel sebagai backend dan React JS sebagai frontend. Berpengalaman dalam membangun sistem end-to-end dengan arsitektur yang rapi, performa optimal, dan user experience yang baik',
+        bio2: 'Fokus saya adalah merancang arsitektur perangkat lunak yang terstruktur dengan baik, mudah dipelihara, dan selaras dengan tujuan bisnis. ',
     };
 
     useEffect(() => {
@@ -79,7 +79,7 @@ export default function Home({ profile, skills }) {
                         <div className="flex items-center gap-1.5">
                             <span className="text-white/30">•</span>
                             <MapPin className="w-3.5 h-3.5" />
-                            <span>Berdomisili di {displayProfile.location}</span>
+                            <span>Berdomisili di Temanggung, Jawa Tengah</span>
                             <span className="inline-flex items-center justify-center w-4 h-3.5 rounded-[2px] bg-blue-600 text-white text-[9px] font-bold leading-none">ID</span>
                         </div>
                         <div className="flex items-center gap-1.5">

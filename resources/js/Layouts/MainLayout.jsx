@@ -23,7 +23,7 @@ const navItems = [
     // { label: 'Konten', href: '/konten', icon: Smartphone },
     { label: 'Pencapaian', href: '/pencapaian', icon: Award },
     { label: 'Proyek', href: '/proyek', icon: FolderOpen },
-    { label: 'Dasbor', href: '/dasbor', icon: LayoutDashboard },
+    { label: 'Statistik', href: '/statistik', icon: LayoutDashboard },
     // { label: 'Ruang Obrolan', href: '/obrolan', icon: MessageSquare },
     { label: 'Kontak', href: '/kontak', icon: Phone },
 ];

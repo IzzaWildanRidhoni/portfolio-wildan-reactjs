@@ -185,7 +185,7 @@ export default function About({ profile, experiences, educations }) {
 
     const displayExperiences = experiences?.length ? experiences : staticExperiences;
     const displayEducations = educations?.length ? educations : staticEducations;
-    const displayProfile = profile || { name: 'Satria Bahari' };
+    const displayProfile = profile || { name: 'Izza Wildan Ridhoni' };
 
     useEffect(() => {
         const t = setTimeout(() => setLoading(false), 700);
@@ -220,7 +220,7 @@ export default function About({ profile, experiences, educations }) {
                             className="text-[26px] text-white/80"
                             style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontStyle: 'italic', fontWeight: 600 }}
                         >
-                            satria
+                            Wildan
                         </p>
                     </div>
                 </div>

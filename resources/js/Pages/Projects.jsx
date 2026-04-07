@@ -7,12 +7,12 @@ import { Star, FolderOpen, ExternalLink } from 'lucide-react';
 const staticProjects = [
     {
         id: 1,
-        title: 'satriabahari.my.id',
+        title: 'izzawildan.my.id',
         description: 'Personal website & portfolio, built from scratch using Next.js, TypeScript, Tailwind ...',
         thumbnail: null,
         tech_stack: ['typescript', 'tailwindcss', 'react', 'nextdotjs', 'express', 'supabase'],
         is_featured: true,
-        demo_url: 'https://satriabahari.my.id',
+        demo_url: 'https://izzawildan.my.id',
         repo_url: null,
         bg: '#0f1117',
     },

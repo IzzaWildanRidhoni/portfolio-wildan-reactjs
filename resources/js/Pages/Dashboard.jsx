@@ -23,14 +23,6 @@ const chartData = [
     { label: 'May', sessions: 6700,  pageviews: 8500  },
 ];
 
-const wakaStats = [
-    { label: 'TypeScript', percent: 34, color: '#3178C6' },
-    { label: 'JavaScript', percent: 22, color: '#F7DF1E' },
-    { label: 'Go',         percent: 18, color: '#00ADD8' },
-    { label: 'Kotlin',     percent: 14, color: '#7F52FF' },
-    { label: 'PHP',        percent: 8,  color: '#777BB4' },
-    { label: 'Other',      percent: 4,  color: '#444' },
-];
 
 function BarChart({ data }) {
     const maxVal = Math.max(...data.flatMap(d => [d.sessions, d.pageviews]));
@@ -125,8 +117,8 @@ export default function Dashboard({ stats }) {
 
                 {/* Header */}
                 <div>
-                    <h1 className="text-[22px] font-bold text-white tracking-tight mb-1">Dasbor</h1>
-                    <p className="text-[13px] text-white/40">Dasbor pribadi saya yang dibangun dengan rute API Next.js, memvisualisasikan statistik pengembangan dan kontribusi secara real-time.</p>
+                    <h1 className="text-[22px] font-bold text-white tracking-tight mb-1">Statistik</h1>
+                    <p className="text-[13px] text-white/40">Statistik memvisualisasikan statistik Pengunjung</p>
                 </div>
 
                 <div className="border-t border-white/[0.07]" />
@@ -173,33 +165,6 @@ export default function Dashboard({ stats }) {
                             </div>
                         </div>
 
-                        <div className="border-t border-white/[0.07]" />
-
-                        {/* ── WAKATIME ── */}
-                        <div>
-                            <div className="flex items-center gap-2 mb-1">
-                                <span className="text-[16px]">⏱</span>
-                                <h2 className="text-[16px] font-bold text-white">WakaTime</h2>
-                            </div>
-                            <p className="text-[12.5px] text-white/35 mb-5">Statistik coding saya dalam 30 hari terakhir.</p>
-
-                            <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-5 space-y-3">
-                                {wakaStats.map(lang => (
-                                    <div key={lang.label} className="space-y-1.5">
-                                        <div className="flex justify-between text-[12px]">
-                                            <span className="text-white/60">{lang.label}</span>
-                                            <span className="text-white/35 font-mono">{lang.percent}%</span>
-                                        </div>
-                                        <div className="h-1.5 rounded-full bg-white/[0.05] overflow-hidden">
-                                            <div
-                                                className="h-full rounded-full transition-all duration-700"
-                                                style={{ width: `${lang.percent}%`, backgroundColor: lang.color }}
-                                            />
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
 
                     </div>
                 )}
