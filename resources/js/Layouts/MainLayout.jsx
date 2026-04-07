@@ -39,7 +39,7 @@ export default function MainLayout({ children }) {
         <div className="flex min-h-screen bg-background text-foreground font-sans">
 
             {/* ── SIDEBAR (desktop only) ── */}
-            <aside className="hidden lg:flex flex-col w-[255px] bg-card border-r border-border">
+            <aside className="hidden lg:flex flex-col w-[255px] bg-card border-r border-border sticky top-0 h-screen">
 
                 {/* Profile */}
                 <div className="flex flex-col items-center pt-7 pb-5 px-5 border-b border-border">
