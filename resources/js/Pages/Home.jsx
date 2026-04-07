@@ -4,48 +4,6 @@ import MainLayout from '@/Layouts/MainLayout';
 import { HomePageSkeleton } from '@/Components/Skeleton';
 import { MapPin, Monitor, Rocket, ArrowRight } from 'lucide-react';
 
-// Pakai simpleicons CDN — sudah terbukti jalan di project ini sebelumnya
-// Format URL: https://cdn.simpleicons.org/{slug}/{hex-color}
-const staticSkills = [
-    { id: 1,  name: 'HTML5',      slug: 'html5',                color: 'E34F26' },
-    // { id: 2,  name: 'CSS3',       slug: 'css3',                 color: '1572B6' },
-    { id: 3,  name: 'Bootstrap',  slug: 'bootstrap',            color: '7952B3' },
-    { id: 4,  name: 'Tailwind',   slug: 'tailwindcss',          color: '06B6D4' },
-    { id: 5,  name: 'JavaScript', slug: 'javascript',           color: 'F7DF1E' },
-    { id: 6,  name: 'TypeScript', slug: 'typescript',           color: '3178C6' },
-    { id: 7,  name: 'React',      slug: 'react',                color: '61DAFB' },
-    { id: 8,  name: 'Vue.js',     slug: 'vuedotjs',             color: '4FC08D' },
-    { id: 9,  name: 'Next.js',    slug: 'nextdotjs',            color: 'ffffff' },
-    // { id: 10, name: 'Nuxt',       slug: 'nuxtdotjs',            color: '00DC82' },
-    { id: 11, name: 'Svelte',     slug: 'svelte',               color: 'FF3E00' },
-    { id: 12, name: 'Redux',      slug: 'redux',                color: '764ABC' },
-    { id: 13, name: 'Figma',      slug: 'figma',                color: 'F24E1E' },
-    { id: 14, name: 'Vite',       slug: 'vite',                 color: '646CFF' },
-    { id: 15, name: 'Gatsby',     slug: 'gatsby',               color: '663399' },
-    { id: 16, name: 'Prisma',     slug: 'prisma',               color: 'ffffff' },
-    { id: 17, name: 'Shopify',    slug: 'shopify',              color: '96BF48' },
-    { id: 18, name: 'Strapi',     slug: 'strapi',               color: '4945FF' },
-    { id: 19, name: 'Supabase',   slug: 'supabase',             color: '3ECF8E' },
-    { id: 20, name: 'Firebase',   slug: 'firebase',             color: 'FFCA28' },
-    { id: 21, name: 'Go',         slug: 'go',                   color: '00ADD8' },
-    { id: 22, name: 'Laravel',    slug: 'laravel',              color: 'FF2D20' },
-    { id: 23, name: 'Kotlin',     slug: 'kotlin',               color: '7F52FF' },
-    { id: 24, name: 'Express',    slug: 'express',              color: 'ffffff' },
-    { id: 25, name: 'PHP',        slug: 'php',                  color: '777BB4' },
-    { id: 26, name: 'Node.js',    slug: 'nodedotjs',            color: '339933' },
-    { id: 27, name: 'MySQL',      slug: 'mysql',                color: '4479A1' },
-    { id: 28, name: 'Docker',     slug: 'docker',               color: '2496ED' },
-    { id: 29, name: 'GitHub',     slug: 'github',               color: 'ffffff' },
-    { id: 30, name: 'npm',        slug: 'npm',                  color: 'CB3837' },
-    { id: 31, name: 'MongoDB',    slug: 'mongodb',              color: '47A248' },
-    { id: 32, name: 'PostgreSQL', slug: 'postgresql',           color: '4169E1' },
-    { id: 33, name: 'Redis',      slug: 'redis',                color: 'FF4438' },
-    { id: 34, name: 'GraphQL',    slug: 'graphql',              color: 'E10098' },
-    { id: 35, name: 'Linux',      slug: 'linux',                color: 'FCC624' },
-    { id: 36, name: 'Git',        slug: 'git',                  color: 'F05032' },
-    { id: 37, name: 'Nginx',      slug: 'nginx',                color: '009639' },
-];
-
 const marqueeStyles = `
     @keyframes marquee-left {
         0%   { transform: translateX(0); }
@@ -58,30 +16,41 @@ const marqueeStyles = `
 `;
 
 function SkillItem({ skill }) {
-    // background = warna icon dengan opacity rendah
-    const bg = `#${skill.color}18`;
+    // Handle color format: database menyimpan dengan '#', CDN butuh tanpa '#'
+    const colorHex = skill.color?.replace('#', '') || 'ffffff';
+    const bg = `#${colorHex}18`;
+    
+    // Prioritaskan icon_url dari DB, fallback ke CDN construction
+    const iconUrl = skill.icon_url 
+        ? `${skill.icon_url}/${colorHex}` 
+        : `https://cdn.simpleicons.org/${skill.slug || skill.name.toLowerCase()}/${colorHex}`;
 
     return (
-        <div className="group relative mx-[6px] flex-shrink-0">
-            <div
-                className="w-[52px] h-[52px] rounded-full flex items-center justify-center border border-white/[0.08] group-hover:border-white/20 transition-all duration-200 cursor-default group-hover:scale-110"
-                style={{ backgroundColor: bg }}
-            >
-                <img
-                    src={`https://cdn.simpleicons.org/${skill.slug}/${skill.color}`}
-                    alt={skill.name}
-                    className="w-6 h-6 object-contain"
-                    loading="lazy"
-                    onError={e => { e.target.style.display = 'none'; }}
-                />
-            </div>
-            {/* Tooltip */}
-            <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 rounded-md bg-[#1f1f1f] border border-white/10 text-[11px] text-white whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-10">
-                {skill.name}
+        <div className="group mx-[8px] flex-shrink-0">
+            <div className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-card/30 border border-white/[0.08] group-hover:border-white/20 transition-all duration-200 cursor-default group-hover:scale-105 group-hover:bg-card/50">
+                {/* Icon */}
+                <div
+                    className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                    style={{ backgroundColor: bg }}
+                >
+                    <img
+                        src={iconUrl}
+                        alt={skill.name}
+                        className="w-5 h-5 object-contain"
+                        loading="lazy"
+                        onError={e => { e.target.style.display = 'none'; }}
+                    />
+                </div>
+                
+                {/* Tech Name */}
+                <span className="text-[13px] font-medium text-white/80 whitespace-nowrap group-hover:text-white transition-colors duration-200">
+                    {skill.name}
+                </span>
             </div>
         </div>
     );
 }
+
 function MarqueeRow({ skills, direction = 'left', speed = 40 }) {
     const items = [...skills, ...skills];
     const animationName = direction === 'right' ? 'marquee-right' : 'marquee-left';
@@ -98,7 +67,7 @@ function MarqueeRow({ skills, direction = 'left', speed = 40 }) {
                 className="flex w-max"
                 style={{ 
                     animation: `${animationName} ${speed}s linear infinite`,
-                    willChange: 'transform' // Optimasi performa animasi
+                    willChange: 'transform'
                 }}
                 onMouseEnter={e => (e.currentTarget.style.animationPlayState = 'paused')}
                 onMouseLeave={e => (e.currentTarget.style.animationPlayState = 'running')}
@@ -111,11 +80,12 @@ function MarqueeRow({ skills, direction = 'left', speed = 40 }) {
     );
 }
 
-// Tambahkan overflow-x-hidden pada container utama Home
 export default function Home({ profile, skills }) {
     const [loading, setLoading] = useState(true);
 
-    const displaySkills = staticSkills;
+    // Gunakan skills dari database, fallback ke empty array jika belum ada
+    const displaySkills = skills && skills.length > 0 ? skills : [];
+    
     const displayProfile = {
         name: 'Izza Wildan Ridhoni',
         work_type: 'Onsite',
@@ -136,10 +106,9 @@ export default function Home({ profile, skills }) {
         <MainLayout>
             <style>{marqueeStyles}</style>
 
-            {/* ── WRAPPER UTAMA DENGAN overflow-x-hidden ── */}
             <div className="space-y-8 w-full overflow-x-hidden">
 
-                {/* ── HERO ─ */}
+                {/* ── HERO ── */}
                 <div className="w-full">
                     <h1 className="text-[28px] font-bold text-white mb-3 tracking-tight">
                         Halo, saya {displayProfile.name}
@@ -170,20 +139,22 @@ export default function Home({ profile, skills }) {
                 {/* ── SKILLS ── */}
                 <div className="w-full">
                     <div className="flex items-center gap-2 mb-1.5">
-                        <span className="text-[13px] text-white/40 font-mono">&lt;/&gt;</span>
+                        {/* <span className="text-[13px] text-white/40 font-mono">&lt;/&gt;</span> */}
                         <h2 className="text-[18px] font-bold text-white tracking-tight">Keahlian</h2>
                     </div>
                     <p className="text-[13px] text-white/40 mb-6">Keahlian profesional saya.</p>
 
-                    {/* Container marquee dengan overflow terkontrol */}
-                    <div className="w-full overflow-hidden -mx-1">
-                        <div className="space-y-3">
-                            {/* Baris 1 — bergerak ke kanan */}
-                            <MarqueeRow skills={displaySkills} direction="left" speed={45} />
-                            {/* Baris 2 — bergerak ke kiri */}
-                            <MarqueeRow skills={displaySkills} direction="right" speed={45} />
+                    {/* Tampilkan marquee hanya jika ada skills */}
+                    {displaySkills.length > 0 ? (
+                        <div className="w-full overflow-hidden -mx-1">
+                            <div className="space-y-3">
+                                <MarqueeRow skills={displaySkills} direction="left" speed={100} />
+                                <MarqueeRow skills={displaySkills} direction="right" speed={100} />
+                            </div>
                         </div>
-                    </div>
+                    ) : (
+                        <p className="text-[13px] text-white/40 italic">Belum ada keahlian yang ditambahkan.</p>
+                    )}
                 </div>
 
                 {/* Divider */}
