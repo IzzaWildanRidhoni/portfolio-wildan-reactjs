@@ -257,9 +257,8 @@ export default function MainLayout({ children }) {
                         const active = isActive(href);
                         return (
                             <Link key={href} href={href} className="flex flex-col items-center gap-1">
-                                <div className={`relative p-2 rounded-xl transition-all duration-200 ${active ? 'bg-primary/15' : 'hover:bg-secondary/50'}`}>
+                                <div className={`p-2 rounded-xl transition-all duration-200 ${active ? 'bg-primary/15' : 'hover:bg-secondary/50'}`}>
                                     <Icon className={`w-[18px] h-[18px] transition-all duration-200 ${active ? 'text-primary scale-110' : 'text-muted-foreground'}`} />
-                                    {active && <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary" />}
                                 </div>
                                 <span className={`text-[9.5px] transition-all duration-200 leading-none ${active ? 'text-primary font-medium' : 'text-muted-foreground'}`}>{label}</span>
                             </Link>
