@@ -13,8 +13,9 @@ export default {
     darkMode: 'class',
     theme: {
         extend: {
+            // ✅ UPDATE DI SINI
             fontFamily: {
-                sans: ['Inter', ...defaultTheme.fontFamily.sans],
+                sans: ['Onest', '"Onest Fallback"', ...defaultTheme.fontFamily.sans],
             },
             colors: {
                 background:  'hsl(var(--background) / <alpha-value>)',

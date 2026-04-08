@@ -1,3 +1,6 @@
+/* 1. Import Font Onest dari Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Onest:wght@100..900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -35,12 +38,12 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    /* 2. Terapkan font-sans ke body */
+    @apply bg-background text-foreground font-sans;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Smooth transitions for interactive elements only (not all *) */
   a, button, [role="button"] {
     transition-property: background-color, border-color, color, opacity, transform;
     transition-duration: 0.2s;
