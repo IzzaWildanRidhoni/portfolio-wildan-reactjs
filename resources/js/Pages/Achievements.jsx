@@ -2,127 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { router } from '@inertiajs/react';
 import MainLayout from '@/Layouts/MainLayout';
 import { AchievementsPageSkeleton } from '@/Components/Skeleton';
-import { Search, ExternalLink } from 'lucide-react';
+import { Search, ExternalLink, X, Calendar, Badge, Building2, Link2, Tag, Folder } from 'lucide-react';
 
-// const staticAchievements = [
-//     {
-//         id: 1,
-//         title: 'Backend Developer Internship - Parto.id',
-//         issuer: 'Affan Technology Indonesia',
-//         credential_id: '196/EKS/HCLGA/ATI/VIII/2025',
-//         thumbnail: null,
-//         issued_date: 'JULY 2025',
-//         type: 'Profesional',
-//         category: 'Backend',
-//         credential_url: null,
-//         bg: '#0f2b1a',
-//         accent: '#22c55e',
-//     },
-//     {
-//         id: 2,
-//         title: 'E-book Petunjuk Pro: Freelance Web Developer & Kerja Remote',
-//         issuer: 'Build With Angga',
-//         credential_id: null,
-//         thumbnail: null,
-//         issued_date: 'SEPTEMBER 2025',
-//         type: 'Course',
-//         category: 'Freelance',
-//         credential_url: null,
-//         bg: '#1a1a2e',
-//         accent: '#6366f1',
-//     },
-//     {
-//         id: 3,
-//         title: 'Belajar Membuat Aplikasi Android dengan Jetpack Compose',
-//         issuer: 'Dicoding Indonesia',
-//         credential_id: '81P2LGL38ZOY',
-//         thumbnail: null,
-//         issued_date: 'JANUARY 2025',
-//         type: 'Course',
-//         category: 'Mobile',
-//         credential_url: null,
-//         bg: '#1a1220',
-//         accent: '#a855f7',
-//     },
-//     {
-//         id: 4,
-//         title: 'Bangkit Academy 2024 by Google',
-//         issuer: 'Bangkit Academy',
-//         credential_id: 'BANGKIT-2024-001',
-//         thumbnail: null,
-//         issued_date: 'DECEMBER 2024',
-//         type: 'Certificate',
-//         category: 'Mobile',
-//         credential_url: null,
-//         bg: '#1a1500',
-//         accent: '#eab308',
-//     },
-//     {
-//         id: 5,
-//         title: 'Google UX Design Certificate',
-//         issuer: 'Google / Coursera',
-//         credential_id: 'GOOGLE-UX-2024',
-//         thumbnail: null,
-//         issued_date: 'NOVEMBER 2024',
-//         type: 'Certificate',
-//         category: 'Design',
-//         credential_url: null,
-//         bg: '#1a0a0a',
-//         accent: '#ef4444',
-//     },
-//     {
-//         id: 6,
-//         title: 'Belajar Pengembangan Web Frontend Expert',
-//         issuer: 'Dicoding Indonesia',
-//         credential_id: 'DICODING-FE-EXP',
-//         thumbnail: null,
-//         issued_date: 'OCTOBER 2024',
-//         type: 'Course',
-//         category: 'Frontend',
-//         credential_url: null,
-//         bg: '#001a1a',
-//         accent: '#06b6d4',
-//     },
-//     {
-//         id: 7,
-//         title: 'React - The Complete Guide 2024',
-//         issuer: 'Udemy / Maximilian Schwarzmüller',
-//         credential_id: 'UDEMY-REACT-2024',
-//         thumbnail: null,
-//         issued_date: 'AUGUST 2024',
-//         type: 'Course',
-//         category: 'Frontend',
-//         credential_url: null,
-//         bg: '#0a1a00',
-//         accent: '#84cc16',
-//     },
-//     {
-//         id: 8,
-//         title: 'AWS Cloud Practitioner Essentials',
-//         issuer: 'Amazon Web Services',
-//         credential_id: 'AWS-CPE-2024',
-//         thumbnail: null,
-//         issued_date: 'JULY 2024',
-//         type: 'Certificate',
-//         category: 'DevOps',
-//         credential_url: null,
-//         bg: '#1a0f00',
-//         accent: '#f97316',
-//     },
-//     {
-//         id: 9,
-//         title: 'Belajar Dasar Git dengan GitHub',
-//         issuer: 'Dicoding Indonesia',
-//         credential_id: 'DICODING-GIT',
-//         thumbnail: null,
-//         issued_date: 'JUNE 2024',
-//         type: 'Course',
-//         category: 'Backend',
-//         credential_url: null,
-//         bg: '#0a0a0a',
-//         accent: '#ffffff',
-//     },
-// ];
+// ─── Color Maps ──────────────────────────────────────────────────────────────
 
 const typeColors = {
     'Profesional': 'bg-emerald-500/15 text-emerald-400',
@@ -140,7 +22,7 @@ const categoryColors = {
     'Freelance': 'bg-yellow-500/10 text-yellow-400',
 };
 
-// ─── Custom Dropdown ──────────────────────────────────────────────────────────
+// ─── Custom Dropdown Component ───────────────────────────────────────────────
 
 function CustomSelect({ value, onChange, placeholder, options }) {
     const [open, setOpen] = useState(false);
@@ -227,10 +109,12 @@ function CustomSelect({ value, onChange, placeholder, options }) {
 
 // ─── Achievement Card ─────────────────────────────────────────────────────────
 
-function AchievementCard({ ach }) {
+function AchievementCard({ ach, onClick }) {
     return (
-        <div className="group rounded-xl border border-white/[0.06] overflow-hidden bg-white/[0.02] hover:border-white/[0.12] hover:bg-white/[0.04] transition-all duration-200 cursor-pointer">
-
+        <div 
+            onClick={() => onClick(ach)}
+            className="group rounded-xl border border-white/[0.06] overflow-hidden bg-white/[0.02] hover:border-white/[0.12] hover:bg-white/[0.04] transition-all duration-200 cursor-pointer"
+        >
             {/* Thumbnail area */}
             <div
                 className="h-[155px] relative flex items-center justify-center overflow-hidden"
@@ -306,7 +190,169 @@ function AchievementCard({ ach }) {
     );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// ─── Achievement Modal ────────────────────────────────────────────────────────
+
+function AchievementModal({ achievement, onClose }) {
+    const modalRef = useRef(null);
+
+    // Close on Escape key
+    useEffect(() => {
+        const handleEscape = (e) => {
+            if (e.key === 'Escape') onClose();
+        };
+        document.addEventListener('keydown', handleEscape);
+        return () => document.removeEventListener('keydown', handleEscape);
+    }, [onClose]);
+
+    // Close on click outside
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (modalRef.current && !modalRef.current.contains(e.target)) {
+                onClose();
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [onClose]);
+
+    // Prevent body scroll when modal is open
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+        return () => { document.body.style.overflow = 'unset'; };
+    }, []);
+
+    if (!achievement) return null;
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm animate-fade-in" />
+            
+            {/* Modal Content */}
+            <div 
+                ref={modalRef}
+                className="relative w-full max-w-2xl bg-[#1a1a1a] border border-white/[0.1] rounded-2xl overflow-hidden shadow-2xl shadow-black/50 animate-scale-in"
+                style={{ backgroundColor: achievement.bg || '#1a1a1a' }}
+            >
+                {/* Close Button */}
+                <button
+                    onClick={onClose}
+                    className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-black/40 hover:bg-black/60 flex items-center justify-center transition-colors group"
+                >
+                    <X className="w-4 h-4 text-white/70 group-hover:text-white transition-colors" />
+                </button>
+
+                {/* Header Image Area */}
+                <div 
+                    className="h-48 relative flex items-center justify-center overflow-hidden"
+                    style={{ backgroundColor: achievement.bg || '#111' }}
+                >
+                    {achievement.thumbnail ? (
+                        <img
+                            src={achievement.thumbnail}
+                            alt={achievement.title}
+                            className="w-full h-full object-cover"
+                        />
+                    ) : (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <div
+                                className="w-32 h-32 rounded-full opacity-15"
+                                style={{ 
+                                    backgroundColor: achievement.accent, 
+                                    boxShadow: `0 0 60px ${achievement.accent}40` 
+                                }}
+                            />
+                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+                                <div
+                                    className="text-xs font-mono font-bold tracking-widest uppercase opacity-50"
+                                    style={{ color: achievement.accent }}
+                                >
+                                    {achievement.issuer}
+                                </div>
+                                {achievement.credential_id && (
+                                    <div className="text-[10px] text-white/30 font-mono tracking-wider">
+                                        {achievement.credential_id}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1a1a1a] via-transparent to-transparent" />
+                </div>
+
+                {/* Modal Body */}
+                <div className="p-6 -mt-8 relative">
+                    {/* Type & Category Badges */}
+                    <div className="flex flex-wrap gap-2 mb-4">
+                        <span className={`text-[11px] px-3 py-1 rounded-full font-medium flex items-center gap-1.5 ${typeColors[achievement.type] || 'bg-white/10 text-white/50'}`}>
+                            <Badge className="w-3 h-3" />
+                            {achievement.type}
+                        </span>
+                        <span className={`text-[11px] px-3 py-1 rounded-full font-medium flex items-center gap-1.5 ${categoryColors[achievement.category] || 'bg-white/10 text-white/50'}`}>
+                            <Folder className="w-3 h-3" />
+                            {achievement.category}
+                        </span>
+                    </div>
+
+                    {/* Title */}
+                    <h2 className="text-xl font-bold text-white mb-2 leading-tight">
+                        {achievement.title}
+                    </h2>
+
+                    {/* Issuer */}
+                    <div className="flex items-center gap-2 text-white/60 mb-5">
+                        <Building2 className="w-4 h-4" />
+                        <span className="text-sm">{achievement.issuer}</span>
+                    </div>
+
+                    {/* Details Grid */}
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                        <div className="bg-white/[0.03] rounded-lg p-3 border border-white/[0.05]">
+                            <div className="flex items-center gap-2 text-white/40 mb-1">
+                                <Calendar className="w-3.5 h-3.5" />
+                                <span className="text-[11px] uppercase tracking-wider font-mono">Issued Date</span>
+                            </div>
+                            <p className="text-sm text-white/80 font-medium">{achievement.issued_date}</p>
+                        </div>
+                        
+                        {achievement.credential_id && (
+                            <div className="bg-white/[0.03] rounded-lg p-3 border border-white/[0.05]">
+                                <div className="flex items-center gap-2 text-white/40 mb-1">
+                                    <Tag className="w-3.5 h-3.5" />
+                                    <span className="text-[11px] uppercase tracking-wider font-mono">Credential ID</span>
+                                </div>
+                                <p className="text-sm text-white/80 font-mono break-all">{achievement.credential_id}</p>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Credential URL */}
+                    {achievement.credential_url && (
+                        <a
+                            href={achievement.credential_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-center gap-2 w-full py-3 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] hover:border-white/[0.15] text-white/80 hover:text-white transition-all group"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                            <span className="text-sm font-medium">Verifikasi Credential</span>
+                        </a>
+                    )}
+                </div>
+
+                {/* Footer */}
+                <div className="px-6 py-4 border-t border-white/[0.06] bg-black/10">
+                    <p className="text-[11px] text-white/30 text-center font-mono">
+                        Klik di luar area atau tekan <kbd className="px-1.5 py-0.5 bg-white/[0.08] rounded text-white/50">ESC</kbd> untuk menutup
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// ─── Page Options ─────────────────────────────────────────────────────────────
 
 const TYPE_OPTIONS = [
     { value: 'Certificate', label: 'Certificate' },
@@ -324,15 +370,16 @@ const CATEGORY_OPTIONS = [
     { value: 'Freelance', label: 'Freelance' },
 ];
 
+// ─── Main Page Component ──────────────────────────────────────────────────────
+
 export default function Achievements({ achievements, filters }) {
     const [loading, setLoading]   = useState(true);
     const [search, setSearch]     = useState(filters?.search || '');
     const [type, setType]         = useState(filters?.type || '');
     const [category, setCategory] = useState(filters?.category || '');
+    const [selectedAchievement, setSelectedAchievement] = useState(null);
 
-    // const displayAchievements = achievements?.length ? achievements : staticAchievements;
-    const displayAchievements = achievements ;
-    // const displayAchievements =  staticAchievements;
+    const displayAchievements = achievements;
 
     useEffect(() => {
         const t = setTimeout(() => setLoading(false), 700);
@@ -362,7 +409,7 @@ export default function Achievements({ achievements, filters }) {
         }
     };
 
-    // Client-side filter for static data
+    // Client-side filter
     const filtered = !search && !type && !category
         ? displayAchievements
         : displayAchievements.filter((a) => {
@@ -402,7 +449,7 @@ export default function Achievements({ achievements, filters }) {
                         />
                     </div>
 
-                    {/* Type filter — custom dropdown */}
+                    {/* Type filter */}
                     <CustomSelect
                         value={type}
                         onChange={(v) => handleFilterChange('type', v)}
@@ -410,7 +457,7 @@ export default function Achievements({ achievements, filters }) {
                         options={TYPE_OPTIONS}
                     />
 
-                    {/* Category filter — custom dropdown */}
+                    {/* Category filter */}
                     <CustomSelect
                         value={category}
                         onChange={(v) => handleFilterChange('category', v)}
@@ -434,12 +481,24 @@ export default function Achievements({ achievements, filters }) {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         {filtered.map((ach) => (
-                            <AchievementCard key={ach.id} ach={ach} />
+                            <AchievementCard 
+                                key={ach.id} 
+                                ach={ach} 
+                                onClick={setSelectedAchievement} 
+                            />
                         ))}
                     </div>
                 )}
 
             </div>
+
+            {/* Achievement Detail Modal */}
+            {selectedAchievement && (
+                <AchievementModal 
+                    achievement={selectedAchievement} 
+                    onClose={() => setSelectedAchievement(null)} 
+                />
+            )}
         </MainLayout>
     );
 }
