@@ -9,7 +9,6 @@ class Education extends Model
 {
     use HasFactory;
 
-
     protected $table = 'educations';
 
     protected $fillable = [
@@ -21,10 +20,11 @@ class Education extends Model
         'start_year',
         'end_year',
         'location',
+        'level',
+        'description',
         'order',
     ];
 
-    // Casting tipe data untuk konsistensi
     protected $casts = [
         'gpa'        => 'string',
         'start_year' => 'string',

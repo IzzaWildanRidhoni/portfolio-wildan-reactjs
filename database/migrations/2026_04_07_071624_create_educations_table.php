@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('start_year');
             $table->string('end_year');
             $table->string('location');
+            $table->enum('level', ['SMA', 'SMK', 'D3', 'S1', 'S2', 'S3', 'Professional', 'Certification']);
+            $table->text('description')->nullable();
             $table->unsignedInteger('order')->default(0); // Opsional: untuk sorting
             $table->timestamps();
         });

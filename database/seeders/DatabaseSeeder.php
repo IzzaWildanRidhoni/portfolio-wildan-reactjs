@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             AchievementSeeder::class,
             SocialLinkSeeder::class,
             MessageSeeder::class,
+            AdminSeeder::class,
         ]);
     }
 }
