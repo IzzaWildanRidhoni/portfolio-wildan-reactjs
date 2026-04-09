@@ -42,18 +42,20 @@ const getInitialNavLayout = () => {
 };
 
 export default function MainLayout({ children }) {
-    const { url } = usePage();
+     const { url, props } = usePage();  
     
-    // ✅ Inisialisasi state langsung dari function (bukan useState biasa)
+    // Inisialisasi state langsung dari function (bukan useState biasa)
     const [navLayout, setNavLayout] = useState(getInitialNavLayout);
     const [theme, setTheme] = useState('dark');
     const [lang, setLang] = useState('ID');
     const [moreOpen, setMoreOpen] = useState(false);
     const [topBarDropdown, setTopBarDropdown] = useState(false);
-    
-    // ✅ Hapus useEffect yang load dari localStorage (sudah di handle di initial state)
 
-    // ✅ Simpan ke localStorage saat berubah
+    // Ambil data profile global
+    const gProfile = props.globalProfile || {};
+    
+
+    //  Simpan ke localStorage saat berubah
     useEffect(() => {
         localStorage.setItem('navLayout', navLayout);
     }, [navLayout]);
@@ -81,7 +83,7 @@ export default function MainLayout({ children }) {
                             <div className="p-[2px] rounded-full bg-gradient-to-br from-primary to-primary/60">
                                 <div className="w-[76px] h-[76px] rounded-full overflow-hidden bg-card">
                                     <img
-                                        src="/images/avatar.jpeg"
+                                        src={gProfile.avatar}
                                         alt="Izza Wildan"
                                         className="w-full h-full object-cover"
                                         onError={e => {
@@ -99,12 +101,12 @@ export default function MainLayout({ children }) {
                         {/* Name */}
                         <div className="flex items-center gap-1.5 mb-0.5">
                             <span className="text-[13.5px] font-semibold text-foreground tracking-[-0.01em]">
-                                Izza Wildan
+                                {gProfile.name}
                             </span>
                             <BadgeCheck className="w-[14px] h-[14px] text-primary fill-primary" strokeWidth={0} />
                         </div>
                         <span className="text-[11px] text-muted-foreground mb-4 tracking-wide">
-                            @izza.wildan
+                            @{gProfile.username}
                         </span>
 
                         {/* Toggles */}
@@ -152,7 +154,7 @@ export default function MainLayout({ children }) {
                             <LayoutGrid className="w-3.5 h-3.5" />
                             Switch to Top Bar
                         </button>
-                        <p className="text-[10px] text-muted-foreground/50 text-center">© 2026 Izza Wildan</p>
+                        <p className="text-[10px] text-muted-foreground/50 text-center">© 2026 {gProfile.name}</p>
                     </div>
                 </aside>
             )}
@@ -163,11 +165,11 @@ export default function MainLayout({ children }) {
                     {/* Logo/Profile */}
                     <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-full overflow-hidden bg-card ring-2 ring-primary/20">
-                            <img src="/images/avatar.jpeg" alt="Izza Wildan" className="w-full h-full object-cover" />
+                            <img src={gProfile.avatar} alt="Izza Wildan" className="w-full h-full object-cover" />
                         </div>
                         <div className="hidden xl:block">
-                            <p className="text-[13px] font-semibold text-foreground">Izza Wildan</p>
-                            <p className="text-[10px] text-muted-foreground">@izza.wildan</p>
+                            <p className="text-[13px] font-semibold text-foreground">{gProfile.name}</p>
+                            <p className="text-[10px] text-muted-foreground">@{gProfile.username}</p>
                         </div>
                     </div>
 
