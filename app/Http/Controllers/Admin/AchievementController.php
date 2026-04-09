@@ -10,46 +10,17 @@ use Inertia\Inertia;
 
 class AchievementController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $query = Achievement::query();
-
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                    ->orWhere('issuer', 'like', "%{$search}%")
-                    ->orWhere('credential_id', 'like', "%{$search}%");
-            });
-        }
-
-        if ($request->filled('type')) {
-            $query->where('type', $request->type);
-        }
-
-        if ($request->filled('category')) {
-            $query->where('category', $request->category);
-        }
-
-        $sortBy    = $request->get('sort_by', 'created_at');
-        $sortDir   = $request->get('sort_dir', 'desc');
-        $perPage   = $request->get('per_page', 10);
-
-        $allowedSorts = ['title', 'issuer', 'type', 'category', 'issued_date', 'created_at'];
-        if (!in_array($sortBy, $allowedSorts)) {
-            $sortBy = 'created_at';
-        }
-
-        $achievements = $query->orderBy($sortBy, $sortDir)
-            ->paginate($perPage)
-            ->withQueryString();
+        // Ambil semua data, urutkan berdasarkan created_at desc
+        // Client yang akan handle filter, search, sort, dan pagination
+        $achievements = Achievement::orderBy('created_at', 'desc')->get();
 
         return Inertia::render('Admin/Achievements/Index', [
-            'achievements' => $achievements,
-            'filters'      => $request->only(['search', 'type', 'category', 'sort_by', 'sort_dir', 'per_page']),
+            'achievements' => $achievements, // Array collection, bukan paginator
+            'filters'      => [], // Tidak perlu kirim filters ke client untuk initial state
         ]);
     }
-
     public function create()
     {
         return Inertia::render('Admin/Achievements/Form', [

@@ -1,7 +1,9 @@
-import { useState, useRef, useEffect } from 'react';
+// resources/js/Pages/Admin/Educations/Index.jsx
+
+import { useState, useMemo, useRef, useEffect } from 'react'; // ⬅️ Tambah useMemo
 import { Link, router, usePage } from '@inertiajs/react';
 import AdminLayout from '@/Layouts/AdminLayout';
-import { Button, StatusBadge, ConfirmModal, Pagination } from '@/Components/Admin/UI';
+import { Button, StatusBadge, ConfirmModal } from '@/Components/Admin/UI'; // ⬅️ Hapus Pagination
 import {
     Plus, Search, Trash2, Pencil, ChevronDown, ChevronUp,
     ChevronsUpDown, ImageOff, X, RefreshCw,
@@ -63,76 +65,128 @@ function Flash() {
     );
 }
 
-// ─── Main Component ───────────────────────────────────────────────────────────
-export default function EducationsIndex({ educations, filters }) {
-    const data = educations?.data ?? [];
-    const meta = {
-        current_page: educations?.current_page ?? 1,
-        per_page:     educations?.per_page     ?? 10,
-    };
+// ─── Helper: Client-side Pagination ───────────────────────────────────────────
+function paginate(array, page, perPage) {
+    const start = (page - 1) * perPage;
+    return array.slice(start, start + perPage);
+}
 
-    const [search, setSearch]         = useState(filters?.search || '');
-    const [level, setLevel]           = useState(filters?.level || '');
-    const [sortBy, setSortBy]         = useState(filters?.sort_by || 'start_year');
-    const [sortDir, setSortDir]       = useState(filters?.sort_dir || 'desc');
-    const [perPage, setPerPage]       = useState(Number(filters?.per_page) || 10);
-    const [selected, setSelected]     = useState([]);
+// ─── Main Component ───────────────────────────────────────────────────────────
+export default function EducationsIndex({ educations }) {
+    // educations sekarang adalah array collection, bukan paginator
+    const allData = Array.isArray(educations) ? educations : [];
+
+    // ─── States untuk Filter & Sort ─────────────────────────────────────
+    const [search, setSearch]     = useState('');
+    const [level, setLevel]       = useState('');
+    const [sortBy, setSortBy]     = useState('start_year');
+    const [sortDir, setSortDir]   = useState('desc');
+    const [perPage, setPerPage]   = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+    
+    const [selected, setSelected] = useState([]);
     const [deleteTarget, setDeleteTarget] = useState(null);
     const [bulkConfirm, setBulkConfirm]   = useState(false);
     const [deleting, setDeleting]         = useState(false);
 
     const searchTimeout = useRef(null);
 
-    const applyFilters = (overrides = {}) => {
-        const params = {
-            search:   search,
-            level:    level,
-            sort_by:  sortBy,
-            sort_dir: sortDir,
-            per_page: perPage,
-            ...overrides,
-        };
-        Object.keys(params).forEach(k => !params[k] && delete params[k]);
-        router.get('/admin/educations', params, { preserveState: true, replace: true });
-    };
+    // ─── Reset page saat filter berubah ─────────────────────────────────
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [search, level, sortBy, sortDir, perPage]);
 
+    // ─── Filtered & Sorted Data (Memoized) ──────────────────────────────
+    const processedData = useMemo(() => {
+        let result = [...allData];
+
+        // Search
+        if (search) {
+            const q = search.toLowerCase();
+            result = result.filter(e => 
+                e.institution?.toLowerCase().includes(q) ||
+                e.degree?.toLowerCase().includes(q) ||
+                e.field?.toLowerCase().includes(q) ||
+                e.location?.toLowerCase().includes(q)
+            );
+        }
+
+        // Level filter
+        if (level) {
+            result = result.filter(e => e.level === level);
+        }
+
+        // Sorting
+        result.sort((a, b) => {
+            let valA = a[sortBy];
+            let valB = b[sortBy];
+            
+            // Handle null/undefined
+            if (valA == null) valA = '';
+            if (valB == null) valB = '';
+            
+            // Special handling for year fields (numeric comparison)
+            if (['start_year', 'end_year', 'gpa'].includes(sortBy)) {
+                valA = Number(valA) || 0;
+                valB = Number(valB) || 0;
+                return sortDir === 'asc' ? valA - valB : valB - valA;
+            }
+            
+            // Case-insensitive string comparison
+            if (typeof valA === 'string') valA = valA.toLowerCase();
+            if (typeof valB === 'string') valB = valB.toLowerCase();
+            
+            if (valA < valB) return sortDir === 'asc' ? -1 : 1;
+            if (valA > valB) return sortDir === 'asc' ? 1 : -1;
+            return 0;
+        });
+
+        return result;
+    }, [allData, search, level, sortBy, sortDir]);
+
+    // ─── Pagination Data ────────────────────────────────────────────────
+    const totalPages = Math.ceil(processedData.length / perPage);
+    const paginatedData = paginate(processedData, currentPage, perPage);
+
+    // ─── Handlers ───────────────────────────────────────────────────────
     const handleSearchChange = (value) => {
         setSearch(value);
         clearTimeout(searchTimeout.current);
-        searchTimeout.current = setTimeout(() => applyFilters({ search: value }), 400);
+        searchTimeout.current = setTimeout(() => {}, 400); // Debounce untuk UX
     };
 
     const handleSort = (field) => {
         const newDir = sortBy === field && sortDir === 'asc' ? 'desc' : 'asc';
         setSortBy(field);
         setSortDir(newDir);
-        applyFilters({ sort_by: field, sort_dir: newDir });
     };
 
     const handlePerPage = (value) => {
         setPerPage(value);
-        applyFilters({ per_page: value });
+        setCurrentPage(1);
     };
 
     const handleFilterSelect = (key, value) => {
         if (key === 'level') setLevel(value);
-        applyFilters({ [key]: value });
     };
 
     const resetFilters = () => {
         setSearch(''); setLevel('');
         setSortBy('start_year'); setSortDir('desc'); setPerPage(10);
-        router.get('/admin/educations', {}, { replace: true });
+        setCurrentPage(1);
     };
 
-    const isAllSelected = data.length > 0 && selected.length === data.length;
-    const toggleAll = () => setSelected(isAllSelected ? [] : data.map(e => e.id));
+    // ─── Selection Logic ────────────────────────────────────────────────
+    const isAllSelected = paginatedData.length > 0 && selected.length === paginatedData.length;
+    const toggleAll = () => setSelected(isAllSelected ? [] : paginatedData.map(e => e.id));
     const toggleOne = (id) => setSelected(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
 
+    // ─── Delete Handlers (masih ke server untuk mutate data) ────────────
     const handleDelete = () => {
         setDeleting(true);
         router.delete(`/admin/educations/${deleteTarget}`, {
             onFinish: () => { setDeleting(false); setDeleteTarget(null); },
+            onSuccess: () => router.reload({ only: ['educations'] }),
         });
     };
 
@@ -141,10 +195,12 @@ export default function EducationsIndex({ educations, filters }) {
         router.delete('/admin/educations', {
             data: { ids: selected },
             onFinish: () => { setDeleting(false); setBulkConfirm(false); setSelected([]); },
+            onSuccess: () => router.reload({ only: ['educations'] }),
         });
     };
 
     const hasActiveFilters = search || level;
+
     const thClass = 'px-4 py-3 text-left text-[11px] font-medium text-white/30 uppercase tracking-wider whitespace-nowrap';
     const tdClass = 'px-4 py-3.5 text-[13px] text-white/70 align-middle';
 
@@ -278,14 +334,14 @@ export default function EducationsIndex({ educations, filters }) {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-white/[0.04]">
-                                {data.length === 0 ? (
+                                {paginatedData.length === 0 ? (
                                     <tr>
                                         <td colSpan="10" className="text-center py-16 text-white/25 text-[13px]">
-                                            Tidak ada data ditemukan
+                                            {hasActiveFilters ? 'Tidak ada data yang cocok dengan filter' : 'Tidak ada data ditemukan'}
                                         </td>
                                     </tr>
                                 ) : (
-                                    data.map((edu, idx) => (
+                                    paginatedData.map((edu, idx) => (
                                         <tr
                                             key={edu.id}
                                             className={`transition-colors hover:bg-white/[0.02] ${selected.includes(edu.id) ? 'bg-indigo-500/[0.04]' : ''}`}
@@ -297,7 +353,7 @@ export default function EducationsIndex({ educations, filters }) {
                                             </td>
                                             <td className={tdClass}>
                                                 <span className="text-white/25 font-mono text-[12px]">
-                                                    {(meta.current_page - 1) * meta.per_page + idx + 1}
+                                                    {(currentPage - 1) * perPage + idx + 1}
                                                 </span>
                                             </td>
                                             <td className="px-4 py-3.5">
@@ -355,9 +411,65 @@ export default function EducationsIndex({ educations, filters }) {
                             </tbody>
                         </table>
                     </div>
-                    <div className="px-4 pb-4">
-                        <Pagination paginatorData={educations} />
-                    </div>
+
+                    {/* Pagination - Custom Client-side */}
+                    {totalPages > 1 && (
+                        <div className="px-4 pb-4">
+                            <div className="flex items-center justify-between text-[12px] text-white/40">
+                                <span>
+                                    Menampilkan {(currentPage - 1) * perPage + 1} - {Math.min(currentPage * perPage, processedData.length)} dari {processedData.length}
+                                </span>
+                                <div className="flex items-center gap-1">
+                                    <button
+                                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                        disabled={currentPage === 1}
+                                        className="px-3 py-1.5 rounded-lg border border-white/[0.08] hover:bg-white/[0.04] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        Prev
+                                    </button>
+                                    
+                                    {/* Page Numbers - Smart Ellipsis */}
+                                    {Array.from({ length: totalPages }, (_, i) => i + 1)
+                                        .filter(page => {
+                                            if (page === 1 || page === totalPages) return true;
+                                            return Math.abs(page - currentPage) <= 2;
+                                        })
+                                        .reduce((acc, page, idx, arr) => {
+                                            if (idx > 0 && page - arr[idx - 1] > 1) {
+                                                acc.push('...');
+                                            }
+                                            acc.push(page);
+                                            return acc;
+                                        }, [])
+                                        .map((page, idx) => (
+                                            page === '...' ? (
+                                                <span key={`ellipsis-${idx}`} className="px-2 py-1.5">...</span>
+                                            ) : (
+                                                <button
+                                                    key={page}
+                                                    onClick={() => setCurrentPage(page)}
+                                                    className={`w-8 h-8 rounded-lg transition-colors ${
+                                                        currentPage === page
+                                                            ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
+                                                            : 'hover:bg-white/[0.04] border border-transparent'
+                                                    }`}
+                                                >
+                                                    {page}
+                                                </button>
+                                            )
+                                        ))}
+                                    
+                                    <button
+                                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                        disabled={currentPage === totalPages}
+                                        className="px-3 py-1.5 rounded-lg border border-white/[0.08] hover:bg-white/[0.04] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        Next
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 

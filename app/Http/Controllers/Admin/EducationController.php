@@ -10,46 +10,16 @@ use Inertia\Inertia;
 
 class EducationController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $query = Education::query();
-
-        // Search filter
-        if ($request->filled('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('institution', 'like', "%{$search}%")
-                    ->orWhere('degree', 'like', "%{$search}%")
-                    ->orWhere('field', 'like', "%{$search}%")
-                    ->orWhere('location', 'like', "%{$search}%");
-            });
-        }
-
-        // Level filter
-        if ($request->filled('level')) {
-            $query->where('level', $request->level);
-        }
-
-        // Sorting
-        $sortBy    = $request->get('sort_by', 'start_year');
-        $sortDir   = $request->get('sort_dir', 'desc');
-        $perPage   = $request->get('per_page', 10);
-
-        $allowedSorts = ['institution', 'degree', 'field', 'level', 'start_year', 'end_year', 'gpa', 'created_at'];
-        if (!in_array($sortBy, $allowedSorts)) {
-            $sortBy = 'start_year';
-        }
-
-        $educations = $query->orderBy($sortBy, $sortDir)
-            ->paginate($perPage)
-            ->withQueryString();
+        // Ambil semua data, urutkan berdasarkan start_year desc (default)
+        // Client yang akan handle filter, search, sort, dan pagination
+        $educations = Education::orderBy('start_year', 'desc')->get();
 
         return Inertia::render('Admin/Educations/Index', [
-            'educations' => $educations,
-            'filters'    => $request->only(['search', 'level', 'sort_by', 'sort_dir', 'per_page']),
+            'educations' => $educations, // Array collection, bukan paginator
         ]);
     }
-
     public function create()
     {
         return Inertia::render('Admin/Educations/Form', [

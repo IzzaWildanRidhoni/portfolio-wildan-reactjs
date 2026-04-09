@@ -1,17 +1,16 @@
 // resources/js/Pages/Admin/Achievements/Index.jsx
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react'; // ⬅️ Tambah useMemo
 import { Link, router, usePage } from '@inertiajs/react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import { Button, StatusBadge, ConfirmModal, Pagination } from '@/Components/Admin/UI';
 import {
     Plus, Search, Trash2, Pencil, ChevronDown, ChevronUp,
-    ChevronsUpDown, ImageOff, X, RefreshCw, MoreVertical,
+    ChevronsUpDown, ImageOff, X, RefreshCw,
     CheckSquare, Square, CheckCircle2, AlertCircle,
 } from 'lucide-react';
 
 // ─── Per Page Select ──────────────────────────────────────────────────────────
-
 function PerPageSelect({ value, onChange }) {
     return (
         <select
@@ -27,7 +26,6 @@ function PerPageSelect({ value, onChange }) {
 }
 
 // ─── Sort Icon ────────────────────────────────────────────────────────────────
-
 function SortIcon({ field, current, direction }) {
     if (field !== current) return <ChevronsUpDown className="w-3 h-3 opacity-30" />;
     return direction === 'asc'
@@ -36,7 +34,6 @@ function SortIcon({ field, current, direction }) {
 }
 
 // ─── Flash Toast ──────────────────────────────────────────────────────────────
-
 function Flash() {
     const { flash } = usePage().props;
     const [show, setShow] = useState(false);
@@ -68,82 +65,129 @@ function Flash() {
     );
 }
 
+// ─── Helper: Client-side Pagination ───────────────────────────────────────────
+function paginate(array, page, perPage) {
+    const start = (page - 1) * perPage;
+    return array.slice(start, start + perPage);
+}
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 
-export default function AchievementsIndex({ achievements, filters }) {
-    // Laravel paginator langsung: achievements.data, achievements.current_page, dll.
-    const data = achievements?.data ?? [];
-    const meta = {
-        current_page: achievements?.current_page ?? 1,
-        per_page:     achievements?.per_page     ?? 10,
-    };
+export default function AchievementsIndex({ achievements }) {
+    // achievements sekarang adalah array collection, bukan paginator
+    const allData = Array.isArray(achievements) ? achievements : [];
 
-    const [search, setSearch]         = useState(filters?.search || '');
-    const [type, setType]             = useState(filters?.type || '');
-    const [category, setCategory]     = useState(filters?.category || '');
-    const [sortBy, setSortBy]         = useState(filters?.sort_by || 'created_at');
-    const [sortDir, setSortDir]       = useState(filters?.sort_dir || 'desc');
-    const [perPage, setPerPage]       = useState(Number(filters?.per_page) || 10);
-    const [selected, setSelected]     = useState([]);
+    // ─── States untuk Filter & Sort ─────────────────────────────────────
+    const [search, setSearch]     = useState('');
+    const [type, setType]         = useState('');
+    const [category, setCategory] = useState('');
+    const [sortBy, setSortBy]     = useState('created_at');
+    const [sortDir, setSortDir]   = useState('desc');
+    const [perPage, setPerPage]   = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
+    
+    const [selected, setSelected] = useState([]);
     const [deleteTarget, setDeleteTarget] = useState(null);
     const [bulkConfirm, setBulkConfirm]   = useState(false);
     const [deleting, setDeleting]         = useState(false);
 
     const searchTimeout = useRef(null);
 
-    const applyFilters = (overrides = {}) => {
-        const params = {
-            search:   search,
-            type:     type,
-            category: category,
-            sort_by:  sortBy,
-            sort_dir: sortDir,
-            per_page: perPage,
-            ...overrides,
-        };
-        // Remove empty
-        Object.keys(params).forEach(k => !params[k] && delete params[k]);
-        router.get('/admin/achievements', params, { preserveState: true, replace: true });
-    };
+    // ─── Reset page saat filter berubah ─────────────────────────────────
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [search, type, category, sortBy, sortDir, perPage]);
 
+    // ─── Filtered & Sorted Data (Memoized) ──────────────────────────────
+    const processedData = useMemo(() => {
+        let result = [...allData];
+
+        // Search
+        if (search) {
+            const q = search.toLowerCase();
+            result = result.filter(a => 
+                a.title?.toLowerCase().includes(q) ||
+                a.issuer?.toLowerCase().includes(q) ||
+                a.credential_id?.toLowerCase().includes(q)
+            );
+        }
+
+        // Type filter
+        if (type) {
+            result = result.filter(a => a.type === type);
+        }
+
+        // Category filter
+        if (category) {
+            result = result.filter(a => a.category === category);
+        }
+
+        // Sorting
+        result.sort((a, b) => {
+            let valA = a[sortBy];
+            let valB = b[sortBy];
+            
+            // Handle null/undefined
+            if (valA == null) valA = '';
+            if (valB == null) valB = '';
+            
+            // Case-insensitive string comparison
+            if (typeof valA === 'string') valA = valA.toLowerCase();
+            if (typeof valB === 'string') valB = valB.toLowerCase();
+            
+            if (valA < valB) return sortDir === 'asc' ? -1 : 1;
+            if (valA > valB) return sortDir === 'asc' ? 1 : -1;
+            return 0;
+        });
+
+        return result;
+    }, [allData, search, type, category, sortBy, sortDir]);
+
+    // ─── Pagination Data ────────────────────────────────────────────────
+    const totalPages = Math.ceil(processedData.length / perPage);
+    const paginatedData = paginate(processedData, currentPage, perPage);
+
+    // ─── Handlers ───────────────────────────────────────────────────────
     const handleSearchChange = (value) => {
         setSearch(value);
         clearTimeout(searchTimeout.current);
-        searchTimeout.current = setTimeout(() => applyFilters({ search: value }), 400);
+        searchTimeout.current = setTimeout(() => {}, 400); // Debounce tetap untuk UX
     };
 
     const handleSort = (field) => {
         const newDir = sortBy === field && sortDir === 'asc' ? 'desc' : 'asc';
         setSortBy(field);
         setSortDir(newDir);
-        applyFilters({ sort_by: field, sort_dir: newDir });
     };
 
     const handlePerPage = (value) => {
         setPerPage(value);
-        applyFilters({ per_page: value });
+        setCurrentPage(1);
     };
 
     const handleFilterSelect = (key, value) => {
         if (key === 'type') setType(value);
         if (key === 'category') setCategory(value);
-        applyFilters({ [key]: value });
     };
 
     const resetFilters = () => {
         setSearch(''); setType(''); setCategory('');
         setSortBy('created_at'); setSortDir('desc'); setPerPage(10);
-        router.get('/admin/achievements', {}, { replace: true });
+        setCurrentPage(1);
     };
 
-    const isAllSelected = data.length > 0 && selected.length === data.length;
-    const toggleAll = () => setSelected(isAllSelected ? [] : data.map(a => a.id));
+    // ─── Selection Logic ────────────────────────────────────────────────
+    const isAllSelected = paginatedData.length > 0 && selected.length === paginatedData.length;
+    const toggleAll = () => setSelected(isAllSelected ? [] : paginatedData.map(a => a.id));
     const toggleOne = (id) => setSelected(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
 
+    // ─── Delete Handlers (masih ke server untuk mutate data) ────────────
     const handleDelete = () => {
         setDeleting(true);
         router.delete(`/admin/achievements/${deleteTarget}`, {
             onFinish: () => { setDeleting(false); setDeleteTarget(null); },
+            // ⚠️ Setelah delete, perlu reload data karena client-side cache
+            onSuccess: () => router.reload({ only: ['achievements'] }),
         });
     };
 
@@ -152,6 +196,7 @@ export default function AchievementsIndex({ achievements, filters }) {
         router.delete('/admin/achievements', {
             data: { ids: selected },
             onFinish: () => { setDeleting(false); setBulkConfirm(false); setSelected([]); },
+            onSuccess: () => router.reload({ only: ['achievements'] }),
         });
     };
 
@@ -295,14 +340,14 @@ export default function AchievementsIndex({ achievements, filters }) {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-white/[0.04]">
-                                {data.length === 0 ? (
+                                {paginatedData.length === 0 ? (
                                     <tr>
                                         <td colSpan="9" className="text-center py-16 text-white/25 text-[13px]">
-                                            Tidak ada data ditemukan
+                                            {hasActiveFilters ? 'Tidak ada data yang cocok dengan filter' : 'Tidak ada data ditemukan'}
                                         </td>
                                     </tr>
                                 ) : (
-                                    data.map((ach, idx) => (
+                                    paginatedData.map((ach, idx) => (
                                         <tr
                                             key={ach.id}
                                             className={`transition-colors hover:bg-white/[0.02] ${selected.includes(ach.id) ? 'bg-indigo-500/[0.04]' : ''}`}
@@ -317,10 +362,10 @@ export default function AchievementsIndex({ achievements, filters }) {
                                                 </button>
                                             </td>
 
-                                            {/* No */}
+                                            {/* No - hitung berdasarkan filtered data */}
                                             <td className={tdClass}>
                                                 <span className="text-white/25 font-mono text-[12px]">
-                                                    {(meta.current_page - 1) * meta.per_page + idx + 1}
+                                                    {(currentPage - 1) * perPage + idx + 1}
                                                 </span>
                                             </td>
 
@@ -388,10 +433,65 @@ export default function AchievementsIndex({ achievements, filters }) {
                         </table>
                     </div>
 
-                    {/* Pagination */}
-                    <div className="px-4 pb-4">
-                        <Pagination paginatorData={achievements} />
-                    </div>
+                    {/* Pagination - Custom Client-side */}
+                    {totalPages > 1 && (
+                        <div className="px-4 pb-4">
+                            <div className="flex items-center justify-between text-[12px] text-white/40">
+                                <span>
+                                    Menampilkan {(currentPage - 1) * perPage + 1} - {Math.min(currentPage * perPage, processedData.length)} dari {processedData.length}
+                                </span>
+                                <div className="flex items-center gap-1">
+                                    <button
+                                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                        disabled={currentPage === 1}
+                                        className="px-3 py-1.5 rounded-lg border border-white/[0.08] hover:bg-white/[0.04] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        Prev
+                                    </button>
+                                    
+                                    {/* Page Numbers */}
+                                    {Array.from({ length: totalPages }, (_, i) => i + 1)
+                                        .filter(page => {
+                                            // Show first, last, and around current page
+                                            if (page === 1 || page === totalPages) return true;
+                                            return Math.abs(page - currentPage) <= 2;
+                                        })
+                                        .reduce((acc, page, idx, arr) => {
+                                            if (idx > 0 && page - arr[idx - 1] > 1) {
+                                                acc.push('...');
+                                            }
+                                            acc.push(page);
+                                            return acc;
+                                        }, [])
+                                        .map((page, idx) => (
+                                            page === '...' ? (
+                                                <span key={`ellipsis-${idx}`} className="px-2 py-1.5">...</span>
+                                            ) : (
+                                                <button
+                                                    key={page}
+                                                    onClick={() => setCurrentPage(page)}
+                                                    className={`w-8 h-8 rounded-lg transition-colors ${
+                                                        currentPage === page
+                                                            ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
+                                                            : 'hover:bg-white/[0.04] border border-transparent'
+                                                    }`}
+                                                >
+                                                    {page}
+                                                </button>
+                                            )
+                                        ))}
+                                    
+                                    <button
+                                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                        disabled={currentPage === totalPages}
+                                        className="px-3 py-1.5 rounded-lg border border-white/[0.08] hover:bg-white/[0.04] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        Next
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
