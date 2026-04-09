@@ -10,6 +10,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AchievementController as pencapaianController;
 use App\Http\Controllers\Admin\EducationController;
+use App\Http\Controllers\Admin\ProfileController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/tentang', [AboutController::class, 'index'])->name('about');
@@ -50,4 +51,11 @@ Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function
     Route::put('educations/{education}',      [EducationController::class, 'update'])->name('educations.update');
     Route::delete('educations/{education}',   [EducationController::class, 'destroy'])->name('educations.destroy');
     Route::delete('educations',               [EducationController::class, 'bulkDestroy'])->name('educations.bulk-destroy');
+
+    // Profile Management
+    Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::get('profile/create', [ProfileController::class, 'create'])->name('profile.create');
+    Route::post('profile', [ProfileController::class, 'store'])->name('profile.store');
+    Route::get('profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
 });

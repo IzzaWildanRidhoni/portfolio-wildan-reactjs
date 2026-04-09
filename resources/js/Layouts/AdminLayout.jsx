@@ -12,7 +12,8 @@ import {
     LayoutDashboard,
     Bell,
     User,
-      GraduationCap
+      GraduationCap,
+      Pencil
 } from 'lucide-react';
 
 const navItems = [
@@ -110,20 +111,37 @@ export default function AdminLayout({ children, title }) {
                 ))}
             </nav>
 
-            {/* User + Logout */}
+           {/* User + Profile + Logout */}
             <div className={`border-t border-white/[0.06] ${collapsed && !mobile ? 'px-2 py-3' : 'px-3 py-3'}`}>
+                
+                {/* User Info - NOW CLICKABLE TO PROFILE */}
                 {(!collapsed || mobile) && auth?.admin && (
-                    <div className="flex items-center gap-2.5 px-3 py-2 mb-2 rounded-lg bg-white/[0.02] border border-white/[0.05]">
-                        <div className="w-7 h-7 rounded-full bg-indigo-500/20 border border-indigo-500/20 flex items-center justify-center flex-shrink-0">
+                    <Link 
+                        href="/admin/profile"
+                        className="flex items-center gap-2.5 px-3 py-2 mb-2 rounded-lg bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-white/[0.08] transition-all group"
+                    >
+                        <div className="w-7 h-7 rounded-full bg-indigo-500/20 border border-indigo-500/20 flex items-center justify-center flex-shrink-0 group-hover:bg-indigo-500/30 transition-colors">
                             <User className="w-3.5 h-3.5 text-indigo-400" />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-[12px] font-medium text-white/80 truncate">{auth.admin.name}</p>
+                            <p className="text-[12px] font-medium text-white/80 truncate group-hover:text-white transition-colors">{auth.admin.name}</p>
                             <p className="text-[10px] text-white/30 truncate">{auth.admin.email}</p>
                         </div>
-                    </div>
+                    </Link>
                 )}
 
+                {/* Profile Link Button (for collapsed state) */}
+                {collapsed && !mobile && auth?.admin && (
+                    <Link 
+                        href="/admin/profile"
+                        className="w-full flex items-center justify-center gap-2.5 px-2 py-2 mb-2 rounded-lg text-white/40 hover:text-indigo-400 hover:bg-indigo-500/[0.06] transition-all"
+                        title="Profile"
+                    >
+                        <User className="w-[14px] h-[14px] flex-shrink-0" />
+                    </Link>
+                )}
+
+                {/* Logout Button */}
                 <button
                     onClick={handleLogout}
                     className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[12.5px] text-white/40 hover:text-red-400 hover:bg-red-500/[0.06] transition-all duration-200 ${collapsed && !mobile ? 'justify-center' : ''}`}
@@ -191,16 +209,24 @@ export default function AdminLayout({ children, title }) {
                     </div>
 
                     <div className="flex items-center gap-2">
+                        {/* Notification Bell */}
                         <button className="w-8 h-8 rounded-lg bg-white/[0.04] flex items-center justify-center hover:bg-white/[0.08] transition-colors">
                             <Bell className="w-4 h-4 text-white/40" />
                         </button>
+                        
+                        {/* User Profile Link - CLICKABLE, NO PENCIL ICON */}
                         {auth?.admin && (
-                            <div className="hidden sm:flex items-center gap-2 pl-2 border-l border-white/[0.06]">
-                                <div className="w-7 h-7 rounded-full bg-indigo-500/20 border border-indigo-500/20 flex items-center justify-center">
+                            <Link 
+                                href="/admin/profile"
+                                className="hidden sm:flex items-center gap-2 pl-2 border-l border-white/[0.06] hover:bg-white/[0.04] hover:border-white/[0.1] rounded-lg px-2 py-1 -mx-2 transition-all group"
+                            >
+                                <div className="w-7 h-7 rounded-full bg-indigo-500/20 border border-indigo-500/20 flex items-center justify-center group-hover:bg-indigo-500/30 transition-colors">
                                     <User className="w-3.5 h-3.5 text-indigo-400" />
                                 </div>
-                                <span className="text-[12.5px] text-white/50">{auth.admin.name}</span>
-                            </div>
+                                <span className="text-[12.5px] text-white/50 group-hover:text-white/70 transition-colors">
+                                    {auth.admin.name}
+                                </span>
+                            </Link>
                         )}
                     </div>
                 </header>
