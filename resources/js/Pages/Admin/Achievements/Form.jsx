@@ -3,72 +3,19 @@
 import { useState, useRef } from 'react';
 import { useForm, Link } from '@inertiajs/react';
 import AdminLayout from '@/Layouts/AdminLayout';
-import { Button } from '@/Components/Admin/UI';
+import { 
+    Button, 
+    FormField, 
+    Input,      // Gunakan Input dari UI.jsx (sudah support label & error)
+    Select,     // Komponen baru dari UI.jsx
+    TextArea,   // Opsional, untuk future use
+} from '@/Components/Admin/UI';
 import {
-    ArrowLeft, Upload, X, ImageOff, ExternalLink,
+    ArrowLeft, Upload, X, ExternalLink,
     AlertCircle, CheckCircle2,
 } from 'lucide-react';
 
-// ─── Field Wrapper ─────────────────────────────────────────────────────────────
-
-function Field({ label, error, required, hint, children }) {
-    return (
-        <div>
-            <div className="flex items-baseline justify-between mb-1.5">
-                <label className="block text-[11.5px] text-white/50 font-medium uppercase tracking-wider">
-                    {label}
-                    {required && <span className="text-red-400 ml-0.5">*</span>}
-                </label>
-                {hint && <span className="text-[11px] text-white/25">{hint}</span>}
-            </div>
-            {children}
-            {error && (
-                <p className="flex items-center gap-1 text-[11.5px] text-red-400 mt-1.5">
-                    <AlertCircle className="w-3 h-3 flex-shrink-0" />
-                    {error}
-                </p>
-            )}
-        </div>
-    );
-}
-
-// ─── Text Input ────────────────────────────────────────────────────────────────
-
-function TextInput({ error, ...props }) {
-    return (
-        <input
-            className={`w-full h-10 bg-white/[0.04] border rounded-lg px-4 text-[13.5px] text-white placeholder-white/20 focus:outline-none transition-all ${
-                error
-                    ? 'border-red-500/50 focus:border-red-500'
-                    : 'border-white/[0.08] focus:border-indigo-500/50 focus:bg-indigo-500/[0.03]'
-            }`}
-            {...props}
-        />
-    );
-}
-
-// ─── Select Input ──────────────────────────────────────────────────────────────
-
-function SelectInput({ error, options, placeholder, value, onChange }) {
-    return (
-        <select
-            value={value}
-            onChange={e => onChange(e.target.value)}
-            className={`w-full h-10 bg-white/[0.04] border rounded-lg px-4 text-[13.5px] text-white focus:outline-none transition-all appearance-none cursor-pointer ${
-                error
-                    ? 'border-red-500/50 focus:border-red-500'
-                    : 'border-white/[0.08] focus:border-indigo-500/50'
-            } ${!value ? 'text-white/30' : ''}`}
-        >
-            <option value="" className="bg-[#161616] text-white/50">{placeholder}</option>
-            {options.map(o => (
-                <option key={o} value={o} className="bg-[#161616] text-white">{o}</option>
-            ))}
-        </select>
-    );
-}
-
-// ─── Thumbnail Uploader ────────────────────────────────────────────────────────
+// ─── Thumbnail Uploader (Tetap lokal karena spesifik) ─────────────────────────
 
 function ThumbnailUploader({ value, preview, onFileChange, onRemove, error }) {
     const inputRef = useRef(null);
@@ -84,11 +31,11 @@ function ThumbnailUploader({ value, preview, onFileChange, onRemove, error }) {
     const displaySrc = preview || value;
 
     return (
-        <div>
-            <label className="block text-[11.5px] text-white/50 font-medium mb-1.5 uppercase tracking-wider">
-                Thumbnail <span className="text-white/25 normal-case font-normal">(opsional)</span>
-            </label>
-
+        <FormField 
+            label="Thumbnail" 
+            error={error}
+            hint={<span className="normal-case font-normal">(opsional)</span>}
+        >
             {displaySrc ? (
                 <div className="relative w-full max-w-[280px] group">
                     <div className="rounded-xl overflow-hidden border border-white/[0.08] aspect-video bg-white/[0.03]">
@@ -139,14 +86,7 @@ function ThumbnailUploader({ value, preview, onFileChange, onRemove, error }) {
                 className="hidden"
                 onChange={e => e.target.files[0] && onFileChange(e.target.files[0])}
             />
-
-            {error && (
-                <p className="flex items-center gap-1 text-[11.5px] text-red-400 mt-1.5">
-                    <AlertCircle className="w-3 h-3" />
-                    {error}
-                </p>
-            )}
-        </div>
+        </FormField>
     );
 }
 
@@ -164,7 +104,7 @@ export default function Form({ achievement, mode }) {
         type:           achievement?.type || '',
         category:       achievement?.category || '',
         credential_url: achievement?.credential_url || '',
-        thumbnail:      null, // file only for new upload
+        thumbnail:      null,
     });
 
     const handleFileChange = (file) => {
@@ -180,40 +120,36 @@ export default function Form({ achievement, mode }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
-        const options = {
-            forceFormData: true,
-            preserveScroll: true,
-        };
+        const options = { forceFormData: true, preserveScroll: true };
 
         if (isEdit) {
-            // Use POST with _method spoofing for file upload + PUT
             post(`/admin/achievements/${achievement.id}?_method=PUT`, options);
         } else {
             post('/admin/achievements', options);
         }
     };
 
-    // Thumbnail display: new preview > existing db thumb
     const thumbSrc = previewUrl || (isEdit ? achievement?.thumbnail : null);
+
+    // Options untuk select (bisa dipindah ke config terpisah jika sering dipakai)
+    const TYPE_OPTIONS = ['Profesional', 'Course', 'Certificate', 'Badge'];
+    const CATEGORY_OPTIONS = ['Backend', 'Frontend', 'Mobile', 'DevOps', 'Design', 'Freelance'];
 
     return (
         <AdminLayout title={isEdit ? 'Edit Achievement' : 'Tambah Achievement'}>
             <div className="max-w-2xl">
-                {/* Back */}
                 <Link href="/admin/achievements" className="inline-flex items-center gap-2 text-[12.5px] text-white/40 hover:text-white/70 transition-colors mb-5">
                     <ArrowLeft className="w-3.5 h-3.5" />
                     Kembali ke daftar
                 </Link>
 
-                {/* Card */}
                 <div className="bg-[#111111] border border-white/[0.07] rounded-2xl p-6">
                     <h2 className="text-[17px] font-bold text-white mb-6">
                         {isEdit ? 'Edit Achievement' : 'Tambah Achievement Baru'}
                     </h2>
 
                     <form onSubmit={handleSubmit} className="space-y-5">
-
+                        
                         {/* Thumbnail */}
                         <ThumbnailUploader
                             value={thumbSrc}
@@ -225,85 +161,79 @@ export default function Form({ achievement, mode }) {
 
                         <div className="border-t border-white/[0.06]" />
 
-                        {/* Title */}
-                        <Field label="Judul" required error={errors.title}>
-                            <TextInput
+                        {/* Title - Gunakan Input dari UI.jsx */}
+                        <FormField label="Judul" required error={errors.title}>
+                            <Input
                                 value={data.title}
                                 onChange={e => setData('title', e.target.value)}
                                 placeholder="Nama sertifikat / lencana"
                                 error={errors.title}
                             />
-                        </Field>
+                        </FormField>
 
                         {/* Issuer */}
-                        <Field label="Penerbit" required error={errors.issuer}>
-                            <TextInput
+                        <FormField label="Penerbit" required error={errors.issuer}>
+                            <Input
                                 value={data.issuer}
                                 onChange={e => setData('issuer', e.target.value)}
                                 placeholder="Contoh: Dicoding, AWS, Google"
                                 error={errors.issuer}
                             />
-                        </Field>
+                        </FormField>
 
-                        {/* Type + Category */}
+                        {/* Type + Category - Gunakan Select dari UI.jsx */}
                         <div className="grid grid-cols-2 gap-4">
-                            <Field label="Type" required error={errors.type}>
-                                <SelectInput
+                            <FormField label="Type" required error={errors.type}>
+                                <Select
                                     value={data.type}
-                                    onChange={v => setData('type', v)}
-                                    options={['Profesional', 'Course', 'Certificate', 'Badge']}
+                                    onChange={e => setData('type', e.target.value)}
+                                    options={TYPE_OPTIONS}
                                     placeholder="Pilih type"
                                     error={errors.type}
                                 />
-                            </Field>
-                            <Field label="Kategori" required error={errors.category}>
-                                <SelectInput
+                            </FormField>
+                            <FormField label="Kategori" required error={errors.category}>
+                                <Select
                                     value={data.category}
-                                    onChange={v => setData('category', v)}
-                                    options={['Backend', 'Frontend', 'Mobile', 'DevOps', 'Design', 'Freelance']}
+                                    onChange={e => setData('category', e.target.value)}
+                                    options={CATEGORY_OPTIONS}
                                     placeholder="Pilih kategori"
                                     error={errors.category}
                                 />
-                            </Field>
+                            </FormField>
                         </div>
 
                         {/* Issued Date + Credential ID */}
                         <div className="grid grid-cols-2 gap-4">
-                            <Field label="Tanggal Terbit" required error={errors.issued_date} hint="Contoh: Jan 2024">
-                                <TextInput
+                            <FormField label="Tanggal Terbit" required error={errors.issued_date} hint="Contoh: Jan 2024">
+                                <Input
                                     value={data.issued_date}
                                     onChange={e => setData('issued_date', e.target.value)}
                                     placeholder="Jan 2024"
                                     error={errors.issued_date}
                                 />
-                            </Field>
-                            <Field label="Credential ID" error={errors.credential_id}>
-                                <TextInput
+                            </FormField>
+                            <FormField label="Credential ID" error={errors.credential_id}>
+                                <Input
                                     value={data.credential_id}
                                     onChange={e => setData('credential_id', e.target.value)}
                                     placeholder="ID (opsional)"
                                     error={errors.credential_id}
                                 />
-                            </Field>
+                            </FormField>
                         </div>
 
                         {/* Credential URL */}
-                        <Field label="URL Verifikasi" error={errors.credential_url} hint="opsional">
-                            <div className="relative">
-                                <ExternalLink className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/25 pointer-events-none" />
-                                <input
-                                    type="url"
-                                    value={data.credential_url}
-                                    onChange={e => setData('credential_url', e.target.value)}
-                                    placeholder="https://..."
-                                    className={`w-full h-10 bg-white/[0.04] border rounded-lg pl-10 pr-4 text-[13.5px] text-white placeholder-white/20 focus:outline-none transition-all ${
-                                        errors.credential_url
-                                            ? 'border-red-500/50 focus:border-red-500'
-                                            : 'border-white/[0.08] focus:border-indigo-500/50'
-                                    }`}
-                                />
-                            </div>
-                        </Field>
+                        <FormField label="URL Verifikasi" error={errors.credential_url} hint="opsional">
+                            <Input
+                                icon={ExternalLink}
+                                type="url"
+                                value={data.credential_url}
+                                onChange={e => setData('credential_url', e.target.value)}
+                                placeholder="https://..."
+                                error={errors.credential_url}
+                            />
+                        </FormField>
 
                         {/* Actions */}
                         <div className="flex items-center gap-3 pt-2 border-t border-white/[0.06]">

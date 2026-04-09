@@ -208,3 +208,109 @@ export function Pagination({ paginatorData }) {
 }
 
 
+// ─── Form Field Wrapper ──────────────────────────────────────────────────────
+
+export function FormField({ label, error, required, hint, children, className = '' }) {
+    return (
+        <div className={className}>
+            <div className="flex items-baseline justify-between mb-1.5">
+                <label className="block text-[11.5px] text-white/50 font-medium uppercase tracking-wider">
+                    {label}
+                    {required && <span className="text-red-400 ml-0.5">*</span>}
+                </label>
+                {hint && <span className="text-[11px] text-white/25">{hint}</span>}
+            </div>
+            {children}
+            {error && (
+                <p className="flex items-center gap-1 text-[11.5px] text-red-400 mt-1.5">
+                    <AlertCircle className="w-3 h-3 flex-shrink-0" />
+                    {error}
+                </p>
+            )}
+        </div>
+    );
+}
+
+// ─── Select Input ────────────────────────────────────────────────────────────
+
+export function Select({ 
+    label, 
+    error, 
+    options = [], 
+    placeholder = 'Pilih...', 
+    className = '',
+    ...props 
+}) {
+    const base = `w-full h-10 bg-white/[0.04] border rounded-lg px-4 text-[13.5px] text-white focus:outline-none transition-all appearance-none cursor-pointer ${
+        error
+            ? 'border-red-500/50 focus:border-red-500'
+            : 'border-white/[0.08] focus:border-indigo-500/50'
+    } ${!props.value ? 'text-white/30' : ''} ${className}`;
+
+    const selectEl = (
+        <select className={base} {...props}>
+            <option value="" className="bg-[#161616] text-white/50">{placeholder}</option>
+            {options.map(opt => {
+                const value = typeof opt === 'object' ? opt.value : opt;
+                const label = typeof opt === 'object' ? opt.label : opt;
+                return (
+                    <option key={value} value={value} className="bg-[#161616] text-white">
+                        {label}
+                    </option>
+                );
+            })}
+        </select>
+    );
+
+    if (!label) return selectEl;
+
+    return (
+        <div className="w-full">
+            {label && (
+                <label className="block text-[11.5px] text-white/50 font-medium mb-1.5 uppercase tracking-wider">
+                    {label}
+                </label>
+            )}
+            {selectEl}
+            {error && (
+                <p className="flex items-center gap-1 text-[11.5px] text-red-400 mt-1.5">
+                    <AlertCircle className="w-3 h-3 flex-shrink-0" />
+                    {error}
+                </p>
+            )}
+        </div>
+    );
+}
+
+// ─── Text Area ───────────────────────────────────────────────────────────────
+
+export function TextArea({ label, error, className = '', rows = 4, ...props }) {
+    const base = `w-full bg-white/[0.04] border rounded-lg p-4 text-[13.5px] text-white placeholder-white/20 focus:outline-none transition-all resize-y ${
+        error
+            ? 'border-red-500/50 focus:border-red-500'
+            : 'border-white/[0.08] focus:border-indigo-500/50 focus:bg-indigo-500/[0.03]'
+    } ${className}`;
+
+    const textareaEl = <textarea rows={rows} className={base} {...props} />;
+
+    if (!label) return textareaEl;
+
+    return (
+        <div className="w-full">
+            {label && (
+                <label className="block text-[11.5px] text-white/50 font-medium mb-1.5 uppercase tracking-wider">
+                    {label}
+                </label>
+            )}
+            {textareaEl}
+            {error && (
+                <p className="flex items-center gap-1 text-[11.5px] text-red-400 mt-1.5">
+                    <AlertCircle className="w-3 h-3 flex-shrink-0" />
+                    {error}
+                </p>
+            )}
+        </div>
+    );
+}
+
+

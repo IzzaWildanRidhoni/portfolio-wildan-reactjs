@@ -1,90 +1,22 @@
+// resources/js/Pages/Admin/Educations/Form.jsx
+
 import { useState, useRef } from 'react';
 import { useForm, Link } from '@inertiajs/react';
 import AdminLayout from '@/Layouts/AdminLayout';
-import { Button } from '@/Components/Admin/UI';
+import { 
+    Button, 
+    FormField, 
+    Input,      // Dari UI.jsx (sudah support icon, label, error)
+    Select,     // Komponen baru dari UI.jsx
+    TextArea,   // Komponen baru dari UI.jsx
+} from '@/Components/Admin/UI';
 import {
-    ArrowLeft, Upload, X, ImageOff, MapPin,
-    AlertCircle, CheckCircle2, Calendar, GraduationCap,
+    ArrowLeft, Upload, X, MapPin, Calendar, GraduationCap,
+    AlertCircle, CheckCircle2,
 } from 'lucide-react';
 
-// ─── Field Wrapper ─────────────────────────────────────────────────────────────
-function Field({ label, error, required, hint, children }) {
-    return (
-        <div>
-            <div className="flex items-baseline justify-between mb-1.5">
-                <label className="block text-[11.5px] text-white/50 font-medium uppercase tracking-wider">
-                    {label}
-                    {required && <span className="text-red-400 ml-0.5">*</span>}
-                </label>
-                {hint && <span className="text-[11px] text-white/25">{hint}</span>}
-            </div>
-            {children}
-            {error && (
-                <p className="flex items-center gap-1 text-[11.5px] text-red-400 mt-1.5">
-                    <AlertCircle className="w-3 h-3 flex-shrink-0" />
-                    {error}
-                </p>
-            )}
-        </div>
-    );
-}
+// ─── Logo Uploader (Tetap lokal karena spesifik untuk education) ─────────────
 
-// ─── Text Input ────────────────────────────────────────────────────────────────
-function TextInput({ error, icon: Icon, ...props }) {
-    return (
-        <div className="relative">
-            {Icon && (
-                <Icon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/25 pointer-events-none" />
-            )}
-            <input
-                className={`w-full h-10 bg-white/[0.04] border rounded-lg text-[13.5px] text-white placeholder-white/20 focus:outline-none transition-all ${
-                    Icon ? 'pl-10 pr-4' : 'px-4'
-                } ${
-                    error
-                        ? 'border-red-500/50 focus:border-red-500'
-                        : 'border-white/[0.08] focus:border-indigo-500/50 focus:bg-indigo-500/[0.03]'
-                }`}
-                {...props}
-            />
-        </div>
-    );
-}
-
-// ─── Select Input ──────────────────────────────────────────────────────────────
-function SelectInput({ error, options, placeholder, value, onChange }) {
-    return (
-        <select
-            value={value}
-            onChange={e => onChange(e.target.value)}
-            className={`w-full h-10 bg-white/[0.04] border rounded-lg px-4 text-[13.5px] text-white focus:outline-none transition-all appearance-none cursor-pointer ${
-                error
-                    ? 'border-red-500/50 focus:border-red-500'
-                    : 'border-white/[0.08] focus:border-indigo-500/50'
-            } ${!value ? 'text-white/30' : ''}`}
-        >
-            <option value="" className="bg-[#161616] text-white/50">{placeholder}</option>
-            {options.map(o => (
-                <option key={o} value={o} className="bg-[#161616] text-white">{o}</option>
-            ))}
-        </select>
-    );
-}
-
-// ─── Textarea ──────────────────────────────────────────────────────────────────
-function Textarea({ error, ...props }) {
-    return (
-        <textarea
-            className={`w-full min-h-[80px] bg-white/[0.04] border rounded-lg px-4 py-3 text-[13.5px] text-white placeholder-white/20 focus:outline-none transition-all resize-none ${
-                error
-                    ? 'border-red-500/50 focus:border-red-500'
-                    : 'border-white/[0.08] focus:border-indigo-500/50 focus:bg-indigo-500/[0.03]'
-            }`}
-            {...props}
-        />
-    );
-}
-
-// ─── Logo Uploader ─────────────────────────────────────────────────────────────
 function LogoUploader({ value, preview, onFileChange, onRemove, error }) {
     const inputRef = useRef(null);
     const [dragging, setDragging] = useState(false);
@@ -99,11 +31,11 @@ function LogoUploader({ value, preview, onFileChange, onRemove, error }) {
     const displaySrc = preview || value;
 
     return (
-        <div>
-            <label className="block text-[11.5px] text-white/50 font-medium mb-1.5 uppercase tracking-wider">
-                Logo Institusi <span className="text-white/25 normal-case font-normal">(opsional)</span>
-            </label>
-
+        <FormField 
+            label="Logo Institusi" 
+            error={error}
+            hint={<span className="normal-case font-normal">(opsional)</span>}
+        >
             {displaySrc ? (
                 <div className="relative w-full max-w-[280px] group">
                     <div className="rounded-xl overflow-hidden border border-white/[0.08] aspect-video bg-white/[0.03] flex items-center justify-center">
@@ -132,7 +64,9 @@ function LogoUploader({ value, preview, onFileChange, onRemove, error }) {
                     onDrop={handleDrop}
                     onClick={() => inputRef.current?.click()}
                     className={`flex flex-col items-center justify-center gap-3 w-full max-w-[280px] aspect-video rounded-xl border-2 border-dashed cursor-pointer transition-all ${
-                        dragging ? 'border-indigo-500/60 bg-indigo-500/[0.06]' : 'border-white/[0.1] hover:border-white/[0.2] hover:bg-white/[0.02]'
+                        dragging 
+                            ? 'border-indigo-500/60 bg-indigo-500/[0.06]' 
+                            : 'border-white/[0.1] hover:border-white/[0.2] hover:bg-white/[0.02]'
                     }`}
                 >
                     <div className="w-10 h-10 rounded-xl bg-white/[0.04] flex items-center justify-center">
@@ -145,18 +79,19 @@ function LogoUploader({ value, preview, onFileChange, onRemove, error }) {
                 </div>
             )}
 
-            <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={e => e.target.files[0] && onFileChange(e.target.files[0])} />
-            {error && (
-                <p className="flex items-center gap-1 text-[11.5px] text-red-400 mt-1.5">
-                    <AlertCircle className="w-3 h-3" />
-                    {error}
-                </p>
-            )}
-        </div>
+            <input 
+                ref={inputRef} 
+                type="file" 
+                accept="image/*" 
+                className="hidden" 
+                onChange={e => e.target.files[0] && onFileChange(e.target.files[0])} 
+            />
+        </FormField>
     );
 }
 
 // ─── Main Form Page ───────────────────────────────────────────────────────────
+
 export default function Form({ education, mode }) {
     const isEdit = mode === 'edit';
     const [previewUrl, setPreviewUrl] = useState(null);
@@ -189,6 +124,7 @@ export default function Form({ education, mode }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         const options = { forceFormData: true, preserveScroll: true };
+        
         if (isEdit) {
             post(`/admin/educations/${education.id}?_method=PUT`, options);
         } else {
@@ -197,6 +133,9 @@ export default function Form({ education, mode }) {
     };
 
     const logoSrc = previewUrl || (isEdit ? education?.logo : null);
+
+    // Options untuk select (bisa dipindah ke config terpisah jika sering dipakai)
+    const LEVEL_OPTIONS = ['SMA', 'SMK', 'D3', 'S1', 'S2', 'S3', 'Professional', 'Certification'];
 
     return (
         <AdminLayout title={isEdit ? 'Edit Pendidikan' : 'Tambah Pendidikan'}>
@@ -212,6 +151,7 @@ export default function Form({ education, mode }) {
                     </h2>
 
                     <form onSubmit={handleSubmit} className="space-y-5">
+                        
                         {/* Logo */}
                         <LogoUploader
                             value={logoSrc}
@@ -223,93 +163,93 @@ export default function Form({ education, mode }) {
 
                         <div className="border-t border-white/[0.06]" />
 
-                        {/* Institution */}
-                        <Field label="Nama Institusi" required error={errors.institution}>
-                            <TextInput
+                        {/* Institution - Gunakan Input dari UI.jsx dengan icon */}
+                        <FormField label="Nama Institusi" required error={errors.institution}>
+                            <Input
                                 icon={GraduationCap}
                                 value={data.institution}
                                 onChange={e => setData('institution', e.target.value)}
                                 placeholder="Contoh: Universitas Indonesia"
                                 error={errors.institution}
                             />
-                        </Field>
+                        </FormField>
 
                         {/* Degree + Field */}
                         <div className="grid grid-cols-2 gap-4">
-                            <Field label="Gelar / Jenjang" required error={errors.degree}>
-                                <TextInput
+                            <FormField label="Gelar / Jenjang" required error={errors.degree}>
+                                <Input
                                     value={data.degree}
                                     onChange={e => setData('degree', e.target.value)}
                                     placeholder="Contoh: Sarjana Komputer"
                                     error={errors.degree}
                                 />
-                            </Field>
-                            <Field label="Jurusan / Bidang" required error={errors.field}>
-                                <TextInput
+                            </FormField>
+                            <FormField label="Jurusan / Bidang" required error={errors.field}>
+                                <Input
                                     value={data.field}
                                     onChange={e => setData('field', e.target.value)}
                                     placeholder="Contoh: Teknik Informatika"
                                     error={errors.field}
                                 />
-                            </Field>
+                            </FormField>
                         </div>
 
                         {/* Level + GPA */}
                         <div className="grid grid-cols-2 gap-4">
-                            <Field label="Level Pendidikan" required error={errors.level}>
-                                <SelectInput
+                            <FormField label="Level Pendidikan" required error={errors.level}>
+                                <Select
                                     value={data.level}
-                                    onChange={v => setData('level', v)}
-                                    options={['SMA', 'SMK', 'D3', 'S1', 'S2', 'S3', 'Professional', 'Certification']}
+                                    onChange={e => setData('level', e.target.value)}
+                                    options={LEVEL_OPTIONS}
                                     placeholder="Pilih level"
                                     error={errors.level}
                                 />
-                            </Field>
-                            <Field label="IPK / Nilai" error={errors.gpa} hint="opsional">
-                                <TextInput
+                            </FormField>
+                            <FormField label="IPK / Nilai" error={errors.gpa} hint="opsional">
+                                <Input
                                     value={data.gpa}
                                     onChange={e => setData('gpa', e.target.value)}
                                     placeholder="Contoh: 3.85/4.00"
                                     error={errors.gpa}
                                 />
-                            </Field>
+                            </FormField>
                         </div>
 
                         {/* Period */}
                         <div className="grid grid-cols-2 gap-4">
-                            <Field label="Tahun Mulai" required error={errors.start_year}>
-                                <TextInput
+                            <FormField label="Tahun Mulai" required error={errors.start_year}>
+                                <Input
                                     icon={Calendar}
                                     value={data.start_year}
                                     onChange={e => setData('start_year', e.target.value)}
                                     placeholder="Contoh: 2020"
                                     error={errors.start_year}
                                 />
-                            </Field>
-                            <Field label="Tahun Lulus" error={errors.end_year} hint="kosongkan jika masih berjalan">
-                                <TextInput
+                            </FormField>
+                            <FormField label="Tahun Lulus" error={errors.end_year} hint="kosongkan jika masih berjalan">
+                                <Input
                                     icon={Calendar}
                                     value={data.end_year}
                                     onChange={e => setData('end_year', e.target.value)}
                                     placeholder="Contoh: 2024"
                                     error={errors.end_year}
                                 />
-                            </Field>
+                            </FormField>
                         </div>
 
                         {/* Location + Order */}
                         <div className="grid grid-cols-2 gap-4">
-                            <Field label="Lokasi" required error={errors.location}>
-                                <TextInput
+                            <FormField label="Lokasi" required error={errors.location}>
+                                <Input
                                     icon={MapPin}
                                     value={data.location}
                                     onChange={e => setData('location', e.target.value)}
                                     placeholder="Contoh: Jakarta, Indonesia"
                                     error={errors.location}
                                 />
-                            </Field>
-                            <Field label="Urutan Tampil" error={errors.order} hint="angka kecil = tampil atas">
-                                <TextInput
+                            </FormField>
+                            <FormField label="Urutan Tampil" error={errors.order} hint="angka kecil = tampil atas">
+                                <Input
                                     type="number"
                                     min="0"
                                     value={data.order}
@@ -317,19 +257,21 @@ export default function Form({ education, mode }) {
                                     placeholder="Contoh: 1"
                                     error={errors.order}
                                 />
-                            </Field>
+                            </FormField>
                         </div>
 
-                        {/* Description */}
-                        <Field label="Deskripsi" error={errors.description} hint="opsional, maks 1000 karakter">
-                            <Textarea
+                        {/* Description - Gunakan TextArea dari UI.jsx */}
+                        <FormField label="Deskripsi" error={errors.description} hint="opsional, maks 1000 karakter">
+                            <TextArea
                                 value={data.description}
                                 onChange={e => setData('description', e.target.value.slice(0, 1000))}
                                 placeholder="Ceritakan pencapaian atau fokus studi Anda..."
                                 error={errors.description}
                             />
-                            <p className="text-[10px] text-white/25 text-right mt-1">{data.description?.length || 0}/1000</p>
-                        </Field>
+                            <p className="text-[10px] text-white/25 text-right mt-1">
+                                {data.description?.length || 0}/1000
+                            </p>
+                        </FormField>
 
                         {/* Actions */}
                         <div className="flex items-center gap-3 pt-2 border-t border-white/[0.06]">
