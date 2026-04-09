@@ -12,8 +12,8 @@ import {
     LayoutDashboard,
     Bell,
     User,
-      GraduationCap,
-      Pencil
+    GraduationCap,
+    Briefcase
 } from 'lucide-react';
 
 const navItems = [
@@ -34,6 +34,12 @@ const navItems = [
         href:     '/admin/educations',
         icon:     GraduationCap,
         exact:    false,
+    },
+     {
+        label: 'Experience',
+        href: '/admin/experiences',
+        icon: Briefcase,
+        exact: false,
     },
 ];
 

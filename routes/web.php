@@ -11,6 +11,8 @@ use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AchievementController as pencapaianController;
 use App\Http\Controllers\Admin\EducationController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\ExperienceController as karirController;
+
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/tentang', [AboutController::class, 'index'])->name('about');
@@ -58,4 +60,13 @@ Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function
     Route::post('profile', [ProfileController::class, 'store'])->name('profile.store');
     Route::get('profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    // Experience CRUD
+    Route::get('experiences',                  [karirController::class, 'index'])->name('experiences.index');
+    Route::get('experiences/create',           [karirController::class, 'create'])->name('experiences.create');
+    Route::post('experiences',                 [karirController::class, 'store'])->name('experiences.store');
+    Route::get('experiences/{experience}/edit', [karirController::class, 'edit'])->name('experiences.edit');
+    Route::put('experiences/{experience}',     [karirController::class, 'update'])->name('experiences.update');
+    Route::delete('experiences/{experience}',  [karirController::class, 'destroy'])->name('experiences.destroy');
+    Route::delete('experiences',               [karirController::class, 'bulkDestroy'])->name('experiences.bulk-destroy');
 });
