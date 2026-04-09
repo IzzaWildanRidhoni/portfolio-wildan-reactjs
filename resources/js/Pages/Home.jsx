@@ -85,13 +85,9 @@ export default function Home({ profile, skills }) {
 
     // Gunakan skills dari database, fallback ke empty array jika belum ada
     const displaySkills = skills && skills.length > 0 ? skills : [];
-    
-    const displayProfile = {
-        name: 'Izza Wildan Ridhoni',
-        work_type: 'Onsite',
-        bio: 'Seorang Fullstack Web Developer yang berfokus pada pengembangan aplikasi web modern dan scalable menggunakan Laravel sebagai backend dan React JS sebagai frontend. Berpengalaman dalam membangun sistem end-to-end dengan arsitektur yang rapi, performa optimal, dan user experience yang baik',
-        bio2: 'Fokus saya adalah merancang arsitektur perangkat lunak yang terstruktur dengan baik, mudah dipelihara, dan selaras dengan tujuan bisnis.',
-    };
+
+    const displayProfile = profile;
+
 
     useEffect(() => {
         const t = setTimeout(() => setLoading(false), 700);
@@ -117,7 +113,7 @@ export default function Home({ profile, skills }) {
                     <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 text-[13px] text-white/45 mb-5">
                         <div className="flex items-center gap-1.5">
                             <MapPin className="w-3.5 h-3.5" />
-                            <span>Temanggung, Jawa Tengah</span>
+                            <span>{displayProfile.location}</span>
                             <span className="inline-flex items-center justify-center w-4 h-3.5 rounded-[2px] bg-blue-600 text-white text-[9px] font-bold leading-none">ID</span>
                         </div>
                         <div className="flex items-center gap-1.5">
@@ -129,7 +125,6 @@ export default function Home({ profile, skills }) {
 
                     <div className="space-y-4 text-[13.5px] text-white/60 leading-[1.75]">
                         <p>{displayProfile.bio}</p>
-                        <p>{displayProfile.bio2}</p>
                     </div>
                 </div>
 
