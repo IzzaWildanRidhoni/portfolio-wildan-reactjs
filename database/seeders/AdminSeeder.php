@@ -22,13 +22,6 @@ class AdminSeeder extends Seeder
                 'password'  => Hash::make('password'),
                 'remember_token' => Str::random(10),
             ],
-            // Tambahkan admin lain jika diperlukan:
-            // [
-            //     'name'      => 'Manager',
-            //     'email'     => 'manager@example.com',
-            //     'password'  => Hash::make('manager123'),
-            //     'remember_token' => Str::random(10),
-            // ],
         ];
 
         foreach ($admins as $admin) {
