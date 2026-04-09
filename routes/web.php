@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\AchievementController as pencapaianController;
 use App\Http\Controllers\Admin\EducationController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ExperienceController as karirController;
+use App\Http\Controllers\Admin\SkillController;
 
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -69,4 +70,13 @@ Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function
     Route::put('experiences/{experience}',     [karirController::class, 'update'])->name('experiences.update');
     Route::delete('experiences/{experience}',  [karirController::class, 'destroy'])->name('experiences.destroy');
     Route::delete('experiences',               [karirController::class, 'bulkDestroy'])->name('experiences.bulk-destroy');
+
+    // Skill CRUD
+    Route::get('skills',                  [SkillController::class, 'index'])->name('skills.index');
+    Route::get('skills/create',           [SkillController::class, 'create'])->name('skills.create');
+    Route::post('skills',                 [SkillController::class, 'store'])->name('skills.store');
+    Route::get('skills/{skill}/edit',     [SkillController::class, 'edit'])->name('skills.edit');
+    Route::put('skills/{skill}',          [SkillController::class, 'update'])->name('skills.update');
+    Route::delete('skills/{skill}',       [SkillController::class, 'destroy'])->name('skills.destroy');
+    Route::delete('skills',               [SkillController::class, 'bulkDestroy'])->name('skills.bulk-destroy');
 });

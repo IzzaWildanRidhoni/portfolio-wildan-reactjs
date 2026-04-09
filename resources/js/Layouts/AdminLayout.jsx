@@ -13,7 +13,7 @@ import {
     Bell,
     User,
     GraduationCap,
-    Briefcase
+    Briefcase,Wrench
 } from 'lucide-react';
 
 const navItems = [
@@ -39,6 +39,12 @@ const navItems = [
         label: 'Experience',
         href: '/admin/experiences',
         icon: Briefcase,
+        exact: false,
+    },
+     {
+        label: 'Skill',
+        href: '/admin/skills',
+        icon: Wrench,
         exact: false,
     },
 ];
