@@ -12,6 +12,7 @@ import {
     LayoutDashboard,
     Bell,
     User,
+      GraduationCap
 } from 'lucide-react';
 
 const navItems = [
@@ -30,7 +31,7 @@ const navItems = [
     {
         label:    'Pendidikan',
         href:     '/admin/educations',
-        icon:     Award,
+        icon:     GraduationCap,
         exact:    false,
     },
 ];
