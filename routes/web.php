@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\EducationController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ExperienceController as karirController;
 use App\Http\Controllers\Admin\SkillController;
+use App\Http\Controllers\Admin\MessageController;
 
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -79,4 +80,12 @@ Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function
     Route::put('skills/{skill}',          [SkillController::class, 'update'])->name('skills.update');
     Route::delete('skills/{skill}',       [SkillController::class, 'destroy'])->name('skills.destroy');
     Route::delete('skills',               [SkillController::class, 'bulkDestroy'])->name('skills.bulk-destroy');
+
+    Route::resource('messages', MessageController::class)->except(['create', 'store', 'update', 'edit']);
+    Route::post('messages/{message}/mark-read', [MessageController::class, 'markAsRead'])->name('messages.mark-read');
+    Route::post('messages/{message}/mark-unread', [MessageController::class, 'markAsUnread'])->name('messages.mark-unread');
+    Route::post('messages/bulk-mark-read', [MessageController::class, 'bulkMarkAsRead'])->name('messages.bulk-mark-read');
+    Route::delete('messages/bulk-destroy', [MessageController::class, 'bulkDestroy'])->name('messages.bulk-destroy');
+    Route::post('messages/{message}/restore', [MessageController::class, 'restore'])->name('messages.restore');
+    Route::delete('messages/{message}/force', [MessageController::class, 'forceDelete'])->name('messages.force-delete');
 });

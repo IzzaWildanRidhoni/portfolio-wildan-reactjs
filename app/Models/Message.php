@@ -1,5 +1,4 @@
 <?php
-// app/Models/Message.php
 
 namespace App\Models;
 
@@ -24,19 +23,19 @@ class Message extends Model
         'read_at' => 'datetime',
     ];
 
-    // Scope: hanya pesan belum dibaca
+    // ✅ Scope: hanya pesan belum dibaca
     public function scopeUnread($query)
     {
         return $query->whereNull('read_at');
     }
 
-    // Scope: hanya pesan sudah dibaca
+    // ✅ Scope: hanya pesan sudah dibaca
     public function scopeRead($query)
     {
         return $query->whereNotNull('read_at');
     }
 
-    // Mark as read
+    // ✅ Mark as read
     public function markAsRead(): void
     {
         if (is_null($this->read_at)) {
@@ -44,7 +43,7 @@ class Message extends Model
         }
     }
 
-    // Get preview (truncate message)
+    // ✅ Get preview (truncate message untuk tabel)
     public function getPreviewAttribute(): string
     {
         return strlen($this->message) > 100
