@@ -52,6 +52,16 @@ const getDefaultThumbnail = (text) => {
     return `https://placehold.co/600x350/0f172a/64748b?text=${encodeURIComponent(text)}&font=roboto&font_size=20`;
 };
 
+// ✅ Strip HTML tags dan truncate ke maxLength karakter
+const stripAndTruncate = (html, maxLength = 100) => {
+    if (!html) return '';
+    // Hapus semua tag HTML
+    const text = html.replace(/<[^>]*>/g, '');
+    // Truncate dan tambah ellipsis
+    if (text.length <= maxLength) return text;
+    return text.substring(0, maxLength).trim() + '...';
+};
+
 // ── Custom Hooks ──
 function useDebounce(value, delay) {
     const [debouncedValue, setDebouncedValue] = useState(value);
@@ -207,6 +217,7 @@ function GridToggle({ value, onChange }) {
     );
 }
 
+
 function Pagination({ currentPage, totalPages, onPageChange }) {
     if (totalPages <= 1) return null;
     const getPageNumbers = () => {
@@ -236,10 +247,14 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
     );
 }
 
+
 // ✅ PortfolioCard menerima prop skills
 function PortfolioCard({ project, skills = [] }) {
     const [imgError, setImgError] = useState(false);
     const src = project.thumbnail && !imgError ? project.thumbnail : getDefaultThumbnail('Coming Soon');
+    
+    // ✅ Truncate description untuk preview card
+    const previewText = stripAndTruncate(project.description, 100);
     
     return (
         <Link href={`/proyek/${project.id}`} className="group rounded-xl border border-white/[0.06] overflow-hidden bg-white/[0.02] hover:border-white/[0.12] hover:bg-white/[0.04] transition-all duration-200 block">
@@ -251,7 +266,12 @@ function PortfolioCard({ project, skills = [] }) {
             </div>
             <div className="p-4">
                 <h3 className="text-[13.5px] font-semibold text-white mb-1">{project.title}</h3>
-                <p className="text-[12.5px] text-white/40 leading-relaxed line-clamp-2">{project.description}</p>
+                
+                {/* ✅ Preview description: plain text, max 100 chars + ellipsis */}
+                <p className="text-[12.5px] text-white/40 leading-relaxed line-clamp-2 min-h-[2.5rem]">
+                    {previewText || 'Tidak ada deskripsi'}
+                </p>
+                
                 {project.tech_stack?.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mt-3">
                         {project.tech_stack.slice(0, 6).map((tech, i) => (
