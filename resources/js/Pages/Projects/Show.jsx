@@ -2,21 +2,6 @@ import { Link } from '@inertiajs/react';
 import MainLayout from '@/Layouts/MainLayout';
 import { ChevronLeft, ExternalLink, Github } from 'lucide-react';
 
-const techColors = {
-    typescript:   '#3178C6',
-    javascript:   '#F7DF1E',
-    react:        '#61DAFB',
-    nextdotjs:    '#ffffff',
-    tailwindcss:  '#06B6D4',
-    astro:        '#FF5D01',
-    go:           '#00ADD8',
-    kotlin:       '#7F52FF',
-    php:          '#777BB4',
-    express:      '#ffffff',
-    supabase:     '#3ECF8E',
-    mysql:        '#4479A1',
-    laravel:      '#FF2D20',
-};
 
 export default function ProjectShow({ project, skillsLookup = {} })  {
     const techStack = project?.tech_stack || [];
