@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\ExperienceController as karirController;
 use App\Http\Controllers\Admin\SkillController;
 use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\ProjectController as PortoController;
+use App\Http\Controllers\Admin\AdminDashboardController;
 
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -37,7 +38,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
 // Protected admin routes
 Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function () {
-    Route::get('/', fn() => redirect()->route('admin.achievements.index'))->name('dashboard');
+    Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // Achievement CRUD
     Route::get('achievements',                  [pencapaianController::class, 'index'])->name('achievements.index');
