@@ -273,7 +273,6 @@ export function ConfirmModal({ open, onClose, onConfirm, title = 'Hapus Data?', 
         </div>
     );
 }
-
 // ─── FlashToast ──────────────────────────────────────────────────────────────
 export function FlashToast() {
     const { flash } = usePage().props;
@@ -292,15 +291,27 @@ export function FlashToast() {
     }, [flash]);
 
     if (!show || !msg) return null;
+    
     return (
-        <div className={`fixed top-5 right-5 z-[100] flex items-center gap-3 px-4 py-3.5 rounded-xl border shadow-xl shadow-black/40 text-[13px] font-medium max-w-[360px] animate-in slide-in-from-top-3 duration-300 ${isSuccess ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300' : 'bg-red-500/10 border-red-500/20 text-red-300'}`}>
-            {isSuccess ? <CheckCircle2 className="w-4 h-4 flex-shrink-0" /> : <AlertCircle className="w-4 h-4 flex-shrink-0" />}
+        <div className={`fixed top-5 right-5 z-[100] flex items-center gap-3 px-4 py-3.5 rounded-xl border shadow-xl shadow-black/40 text-[13px] font-medium max-w-[360px] animate-in slide-in-from-top-3 duration-300 ${
+            isSuccess 
+                ? 'bg-emerald-600 border-emerald-500 text-white' 
+                : 'bg-red-600 border-red-500 text-white'
+        }`}>
+            {isSuccess 
+                ? <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-white/90" /> 
+                : <AlertCircle className="w-4 h-4 flex-shrink-0 text-white/90" />
+            }
             <span>{msg}</span>
-            <button onClick={() => setShow(false)} className="ml-auto opacity-60 hover:opacity-100"><X className="w-3.5 h-3.5" /></button>
+            <button 
+                onClick={() => setShow(false)} 
+                className="ml-auto text-white/80 hover:text-white transition-colors"
+            >
+                <X className="w-3.5 h-3.5" />
+            </button>
         </div>
     );
 }
-
 // ─── StatusBadge ─────────────────────────────────────────────────────────────
 const badgeVariants = {
     'Profesional': 'bg-emerald-500/15 text-emerald-400 border-emerald-500/20',
