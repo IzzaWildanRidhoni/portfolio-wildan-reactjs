@@ -18,8 +18,18 @@ const techColors = {
     laravel:      '#FF2D20',
 };
 
-export default function ProjectShow({ project }) {
+export default function ProjectShow({ project, skillsLookup = {} })  {
     const techStack = project?.tech_stack || [];
+
+       // Helper untuk dapat color & icon dari lookup
+    const getSkillMeta = (techName) => {
+        const skill = skillsLookup[techName];
+        return {
+            color: skill?.color || '#6366f1', // fallback color
+            icon_url: skill?.icon_url || null,
+        };
+    };
+
 
     return (
         <MainLayout>
@@ -157,31 +167,38 @@ export default function ProjectShow({ project }) {
 
                 <div className="border-t border-white/[0.07]" />
 
-                {/* Tech stack */}
+                {/* Tech stack - dinamis dari database */}
                 {techStack.length > 0 && (
                     <div className="flex flex-wrap items-center gap-2">
                         <span className="text-[13px] text-white/40 mr-1">Teknologi :</span>
                         {techStack.map((tech, i) => {
+                            const { color, icon_url } = getSkillMeta(tech);
                             const key = tech.toLowerCase().replace(/\s/g, '');
-                            const color = techColors[key] || '#ffffff';
+                            
                             return (
                                 <div
                                     key={i}
                                     className="flex items-center gap-1.5 border border-white/[0.08] rounded-full px-3 py-1"
                                     style={{ backgroundColor: color + '15' }}
                                 >
-                                    <img
-                                        src={`https://cdn.simpleicons.org/${key}`}
-                                        alt={tech}
-                                        className="w-3.5 h-3.5"
-                                        onError={e => { e.target.style.display = 'none'; }}
-                                    />
+                                    {/* Prioritaskan icon dari database, fallback ke simpleicons */}
+                                    {icon_url ? (
+                                        <img src={icon_url} alt={tech} className="w-3.5 h-3.5" onError={e => { e.target.style.display = 'none'; }} />
+                                    ) : (
+                                        <img
+                                            src={`https://cdn.simpleicons.org/${key}`}
+                                            alt={tech}
+                                            className="w-3.5 h-3.5"
+                                            onError={e => { e.target.style.display = 'none'; }}
+                                        />
+                                    )}
                                     <span className="text-[12px] text-white/60">{tech}</span>
                                 </div>
                             );
                         })}
                     </div>
                 )}
+
 
                 {/* Action buttons */}
                 {(project?.demo_url || project?.repo_url) && (

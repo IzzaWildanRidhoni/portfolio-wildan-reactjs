@@ -23,9 +23,12 @@ class ProjectController extends Controller
 
     public function create()
     {
+        $skills = \App\Models\Skill::ordered()->get(['id', 'name', 'color', 'icon_url']);
+
         return Inertia::render('Admin/Projects/Form', [
             'project' => null,
             'mode'    => 'create',
+            'skills'  => $skills,
         ]);
     }
 
@@ -60,9 +63,12 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
+        $skills = \App\Models\Skill::ordered()->get(['id', 'name', 'color', 'icon_url']);
+
         return Inertia::render('Admin/Projects/Form', [
             'project' => $project,
             'mode'    => 'edit',
+            'skills'  => $skills,
         ]);
     }
 

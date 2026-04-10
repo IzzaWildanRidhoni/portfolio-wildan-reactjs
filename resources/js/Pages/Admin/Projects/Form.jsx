@@ -1,5 +1,5 @@
 // resources/js/Pages/Admin/Projects/Form.jsx
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useForm, Link } from '@inertiajs/react';
 import AdminLayout from '@/Layouts/AdminLayout';
 import {
@@ -100,47 +100,115 @@ function ThumbnailUploader({ value, preview, onFileChange, onRemove, error }) {
     );
 }
 
-// ─── TechStack Input ───────────────────────────────────────────────────────────
-function TechStackInput({ value = [], onChange }) {
-    const [input, setInput] = useState('');
 
-    const add = () => {
-        const trimmed = input.trim();
-        if (trimmed && !value.includes(trimmed)) {
-            onChange([...value, trimmed]);
+// ─── TechStack Multi Select ───────────────────────────────────────────────────
+function TechStackSelect({ value = [], onChange, skills = [] }) {
+    const [search, setSearch] = useState('');
+    const [open, setOpen] = useState(false);
+    const containerRef = useRef(null);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (containerRef.current && !containerRef.current.contains(e.target)) {
+                setOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const filteredSkills = skills.filter(s => 
+        s.name.toLowerCase().includes(search.toLowerCase()) && 
+        !value.includes(s.name)
+    );
+
+    const toggleSkill = (skillName) => {
+        if (value.includes(skillName)) {
+            onChange(value.filter(t => t !== skillName));
+        } else {
+            onChange([...value, skillName]);
         }
-        setInput('');
     };
 
-    const remove = (tech) => onChange(value.filter(t => t !== tech));
-
-    const handleKey = (e) => {
-        if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); add(); }
-        if (e.key === 'Backspace' && !input && value.length) remove(value[value.length - 1]);
-    };
+    const removeSkill = (tech) => onChange(value.filter(t => t !== tech));
 
     return (
-        <div>
-            <div className="flex flex-wrap gap-1.5 min-h-[42px] w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 focus-within:border-indigo-500/50 transition-colors">
-                {value.map(tech => (
-                    <span key={tech}
-                        className="inline-flex items-center gap-1 text-[11.5px] px-2 py-0.5 rounded-md bg-indigo-500/15 text-indigo-300 border border-indigo-500/20">
-                        <Code2 className="w-2.5 h-2.5" />
-                        {tech}
-                        <button type="button" onClick={() => remove(tech)}
-                            className="ml-0.5 opacity-60 hover:opacity-100">
-                            <X className="w-2.5 h-2.5" />
-                        </button>
-                    </span>
-                ))}
-                <input
-                    type="text" value={input} onChange={e => setInput(e.target.value)}
-                    onKeyDown={handleKey} onBlur={add}
-                    placeholder={value.length === 0 ? 'Ketik lalu Enter (misal: React, Laravel...)' : ''}
-                    className="flex-1 min-w-[120px] bg-transparent text-[13px] text-white placeholder-white/20 focus:outline-none"
-                />
+        <div ref={containerRef} className="relative">
+            {/* Selected chips */}
+            <div 
+                className="flex flex-wrap gap-1.5 min-h-[42px] w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 cursor-text focus-within:border-indigo-500/50 transition-colors"
+                onClick={() => setOpen(true)}
+            >
+                {value.map(tech => {
+                    const skill = skills.find(s => s.name === tech);
+                    return (
+                        <span key={tech}
+                            className="inline-flex items-center gap-1 text-[11.5px] px-2 py-0.5 rounded-md bg-indigo-500/15 text-indigo-300 border border-indigo-500/20">
+                            {skill?.icon_url && (
+                                <img src={skill.icon_url} alt={tech} className="w-3 h-3 rounded" onError={e => e.target.style.display='none'} />
+                            )}
+                            {tech}
+                            <button type="button" onClick={(e) => { e.stopPropagation(); removeSkill(tech); }}
+                                className="ml-0.5 opacity-60 hover:opacity-100">
+                                <X className="w-2.5 h-2.5" />
+                            </button>
+                        </span>
+                    );
+                })}
+                <span className="text-[13px] text-white/40 flex-1">
+                    {value.length === 0 ? 'Pilih teknologi...' : ''}
+                </span>
+                <ChevronDown className={`w-4 h-4 text-white/30 transition-transform ${open ? 'rotate-180' : ''}`} />
             </div>
-            <p className="text-[11px] text-white/25 mt-1">Tekan Enter atau koma untuk menambah. Backspace untuk hapus.</p>
+
+            {/* Dropdown */}
+            {open && (
+                <div className="absolute z-50 mt-1 w-full bg-[#1a1a1a] border border-white/[0.1] rounded-xl shadow-xl overflow-hidden">
+                    {/* Search */}
+                    <div className="p-2 border-b border-white/[0.06]">
+                        <input
+                            autoFocus
+                            type="text"
+                            value={search}
+                            onChange={e => setSearch(e.target.value)}
+                            placeholder="Cari skill..."
+                            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-[13px] text-white placeholder-white/30 focus:outline-none focus:border-indigo-500/50"
+                        />
+                    </div>
+                    
+                    {/* List */}
+                    <div className="max-h-60 overflow-y-auto p-1">
+                        {filteredSkills.length === 0 ? (
+                            <p className="px-3 py-2 text-[12px] text-white/30">
+                                {search ? 'Tidak ditemukan' : 'Semua skill sudah dipilih'}
+                            </p>
+                        ) : (
+                            filteredSkills.map(skill => (
+                                <button
+                                    key={skill.id}
+                                    type="button"
+                                    onClick={() => { toggleSkill(skill.name); setSearch(''); }}
+                                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left text-[13px] text-white/70 hover:bg-white/[0.06] hover:text-white transition-colors"
+                                >
+                                    {skill.icon_url && (
+                                        <img src={skill.icon_url} alt={skill.name} className="w-4 h-4 rounded" onError={e => e.target.style.display='none'} />
+                                    )}
+                                    <span>{skill.name}</span>
+                                    {skill.color && (
+                                        <span className="ml-auto w-3 h-3 rounded-full border border-white/20" style={{ backgroundColor: skill.color }} />
+                                    )}
+                                </button>
+                            ))
+                        )}
+                    </div>
+                    
+                    {/* Footer */}
+                    <div className="px-3 py-2 bg-white/[0.02] border-t border-white/[0.06] text-[11px] text-white/30">
+                        {value.length} dipilih • Klik untuk toggle
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
@@ -486,7 +554,7 @@ function RichTextEditor({ value, onChange, error }) {
 }
 
 // ─── Main Form Page ─────────────────────────────────────────────────────────────
-export default function Form({ project, mode }) {
+export default function Form({ project, mode, skills = [] }) {
     const isEdit = mode === 'edit';
     const [previewUrl, setPreviewUrl] = useState(null);
 
@@ -703,8 +771,12 @@ export default function Form({ project, mode }) {
                         <div className="border-t border-white/[0.06]" />
 
                         {/* Tech Stack */}
-                        <FormField label="Tech Stack" error={errors.tech_stack} hint="teknologi yang digunakan">
-                            <TechStackInput value={data.tech_stack} onChange={v => setData('tech_stack', v)} />
+                       <FormField label="Tech Stack" error={errors.tech_stack} hint="pilih dari daftar skill">
+                            <TechStackSelect 
+                                value={data.tech_stack} 
+                                onChange={v => setData('tech_stack', v)} 
+                                skills={skills || []} // ✅ skills dari controller
+                            />
                         </FormField>
 
                         {/* URLs */}

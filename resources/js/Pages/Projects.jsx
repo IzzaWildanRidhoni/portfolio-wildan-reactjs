@@ -1,3 +1,5 @@
+// resources/js/Pages/Projects.jsx
+
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link } from '@inertiajs/react';
 import MainLayout from '@/Layouts/MainLayout';
@@ -13,29 +15,25 @@ const GITLAB_USERNAME = 'IzzaWildanRidhoni';
 const REPOS_PER_PAGE = 9;
 const DEBOUNCE_DELAY = 300;
 
-const techColors = {
-    typescript:  '#3178C6', javascript:  '#F7DF1E', react:       '#61DAFB',
-    nextdotjs:   '#ffffff',   tailwindcss: '#06B6D4', astro:       '#FF5D01',
-    go:          '#00ADD8',    kotlin:      '#7F52FF', php:         '#777BB4',
-    express:     '#ffffff',    supabase:    '#3ECF8E', mysql:       '#4479A1',
-    firebase:    '#FFCA28',    laravel:     '#FF2D20', nodedotjs:   '#339933',
-    python:      '#3776AB',    rust:        '#DEA584', java:        '#007396',
-    docker:      '#2496ED',    postgresql:  '#336791',
+// ❌ HAPUS: const techColors = { ... } dan getLanguageColor()
+
+// ✅ Helper: Cari skill dari array skills (case-insensitive)
+const findSkill = (skills, techName) => {
+    if (!skills || !techName) return null;
+    const lowerName = techName.toLowerCase().trim();
+    return skills.find(s => s.name.toLowerCase().trim() === lowerName) ||
+           skills.find(s => s.name.toLowerCase().includes(lowerName)) ||
+           skills.find(s => lowerName.includes(s.name.toLowerCase()));
 };
 
-const getLanguageColor = (lang) => {
-    const colors = {
-        'JavaScript': 'bg-yellow-400/20 text-yellow-300 border-yellow-400/30',
-        'TypeScript': 'bg-blue-400/20 text-blue-300 border-blue-400/30',
-        'PHP': 'bg-indigo-400/20 text-indigo-300 border-indigo-400/30',
-        'Python': 'bg-emerald-400/20 text-emerald-300 border-emerald-400/30',
-        'Go': 'bg-cyan-400/20 text-cyan-300 border-cyan-400/30',
-        'Kotlin': 'bg-purple-400/20 text-purple-300 border-purple-400/30',
-        'Java': 'bg-orange-400/20 text-orange-300 border-orange-400/30',
-        'HTML': 'bg-orange-400/20 text-orange-300 border-orange-400/30',
-        'CSS': 'bg-pink-400/20 text-pink-300 border-pink-400/30',
-    };
-    return colors[lang] || 'bg-white/10 text-white/60 border-white/20';
+// ✅ Helper: Generate color fallback yang konsisten berdasarkan nama
+const stringToColor = (str) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const hue = Math.abs(hash) % 360;
+    return `hsl(${hue}, 65%, 55%)`;
 };
 
 const formatNumber = (num) => {
@@ -86,7 +84,7 @@ function useGitHubRepos(username) {
                 const linkHeader = res.headers.get('Link');
                 if (!linkHeader || !linkHeader.includes('rel="next"')) break;
                 page++;
-                if (page > 5) break; // Safety limit
+                if (page > 5) break;
             }
             setRepos(allRepos);
         } catch (err) {
@@ -132,11 +130,37 @@ function useGitLabRepos(username) {
 
 // ── Sub-Components ──
 
-function TechIcon({ slug }) {
-    const color = techColors[slug] || '#ffffff';
+// ✅ TechIcon yang menggunakan skills dari database
+function TechIcon({ slug, skills = [] }) {
+    const skill = findSkill(skills, slug);
+    const color = skill?.color || stringToColor(slug);
+    const iconUrl = skill?.icon_url;
+    
     return (
-        <div className="w-7 h-7 rounded-full border border-white/[0.08] flex items-center justify-center overflow-hidden" style={{ backgroundColor: color + '20' }} title={slug}>
-            <img src={`https://cdn.simpleicons.org/${slug}`} alt={slug} className="w-[15px] h-[15px] object-contain" onError={e => { e.target.style.display = 'none'; }} />
+        <div 
+            className="w-7 h-7 rounded-full border border-white/[0.08] flex items-center justify-center overflow-hidden" 
+            style={{ backgroundColor: color + '20' }} 
+            title={slug}
+        >
+            {iconUrl ? (
+                <img 
+                    src={iconUrl} 
+                    alt={slug} 
+                    className="w-[15px] h-[15px] object-contain" 
+                    onError={e => { 
+                        e.target.style.display = 'none';
+                        // Fallback ke simpleicons jika icon_url error
+                        e.target.src = `https://cdn.simpleicons.org/${slug.toLowerCase().replace(/\s/g, '')}`;
+                    }} 
+                />
+            ) : (
+                <img 
+                    src={`https://cdn.simpleicons.org/${slug.toLowerCase().replace(/\s/g, '')}`} 
+                    alt={slug} 
+                    className="w-[15px] h-[15px] object-contain" 
+                    onError={e => { e.target.style.display = 'none'; }} 
+                />
+            )}
         </div>
     );
 }
@@ -212,9 +236,11 @@ function Pagination({ currentPage, totalPages, onPageChange }) {
     );
 }
 
-function PortfolioCard({ project }) {
+// ✅ PortfolioCard menerima prop skills
+function PortfolioCard({ project, skills = [] }) {
     const [imgError, setImgError] = useState(false);
     const src = project.thumbnail && !imgError ? project.thumbnail : getDefaultThumbnail('Coming Soon');
+    
     return (
         <Link href={`/proyek/${project.id}`} className="group rounded-xl border border-white/[0.06] overflow-hidden bg-white/[0.02] hover:border-white/[0.12] hover:bg-white/[0.04] transition-all duration-200 block">
             <div className="relative h-[175px] overflow-hidden bg-white/[0.03]">
@@ -226,7 +252,13 @@ function PortfolioCard({ project }) {
             <div className="p-4">
                 <h3 className="text-[13.5px] font-semibold text-white mb-1">{project.title}</h3>
                 <p className="text-[12.5px] text-white/40 leading-relaxed line-clamp-2">{project.description}</p>
-                {project.tech_stack?.length > 0 && <div className="flex flex-wrap gap-1.5 mt-3">{project.tech_stack.slice(0, 6).map((tech, i) => <TechIcon key={i} slug={tech} />)}</div>}
+                {project.tech_stack?.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-3">
+                        {project.tech_stack.slice(0, 6).map((tech, i) => (
+                            <TechIcon key={i} slug={tech} skills={skills} />
+                        ))}
+                    </div>
+                )}
             </div>
         </Link>
     );
@@ -234,6 +266,23 @@ function PortfolioCard({ project }) {
 
 function RepoCard({ repo, platform }) {
     const PlatformIcon = platform === 'github' ? Github : Gitlab;
+    
+    // ✅ Untuk repo, tetap pakai getLanguageColor sederhana karena tidak dari database
+    const getLanguageColor = (lang) => {
+        const colors = {
+            'JavaScript': 'bg-yellow-400/20 text-yellow-300 border-yellow-400/30',
+            'TypeScript': 'bg-blue-400/20 text-blue-300 border-blue-400/30',
+            'PHP': 'bg-indigo-400/20 text-indigo-300 border-indigo-400/30',
+            'Python': 'bg-emerald-400/20 text-emerald-300 border-emerald-400/30',
+            'Go': 'bg-cyan-400/20 text-cyan-300 border-cyan-400/30',
+            'Kotlin': 'bg-purple-400/20 text-purple-300 border-purple-400/30',
+            'Java': 'bg-orange-400/20 text-orange-300 border-orange-400/30',
+            'HTML': 'bg-orange-400/20 text-orange-300 border-orange-400/30',
+            'CSS': 'bg-pink-400/20 text-pink-300 border-pink-400/30',
+        };
+        return colors[lang] || 'bg-white/10 text-white/60 border-white/20';
+    };
+    
     return (
         <a href={repo.html_url || repo.web_url} target="_blank" rel="noopener noreferrer" className="group block rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 hover:bg-white/[0.05] hover:border-yellow-400/30 transition-all duration-200">
             <div className="flex items-start justify-between gap-3 mb-3">
@@ -258,14 +307,15 @@ function RepoCard({ repo, platform }) {
 }
 
 // ── Main Component ──
-export default function Projects({ projects: portfolioProjects }) {
+// ✅ Terima prop skills dari controller
+export default function Projects({ projects: portfolioProjects, skills = [] }) {
     const [activeTab, setActiveTab] = useState('portfolio');
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [showForks, setShowForks] = useState(false);
     const [loading, setLoading] = useState(true);
     
-    // Grid Layout State (2 or 3 columns) - Persistent
+    // Grid Layout State
     const [gridCols, setGridCols] = useState(() => {
         if (typeof window !== 'undefined') {
             const saved = localStorage.getItem('projects_grid_cols');
@@ -345,7 +395,7 @@ export default function Projects({ projects: portfolioProjects }) {
                     ))}
                 </div>
 
-                {/* Controls: Search + Grid Toggle + Filter */}
+                {/* Controls */}
                 <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
                     <div className="flex-1 w-full sm:w-auto">
                         <SearchInput value={searchQuery} onChange={setSearchQuery} placeholder={activeTab === 'portfolio' ? 'Cari proyek, teknologi...' : `Cari ${activeTab} project, bahasa...`} />
@@ -394,7 +444,9 @@ export default function Projects({ projects: portfolioProjects }) {
                         <p className="text-[11px] text-white/30 mb-3">Menampilkan {paginatedData.length} dari {filteredData.length} hasil</p>
                         <div className={gridClass}>
                             {paginatedData.map(item => (
-                                activeTab === 'portfolio' ? <PortfolioCard key={item.id} project={item} /> : <RepoCard key={item.id} repo={item} platform={activeTab} />
+                                activeTab === 'portfolio' 
+                                    ? <PortfolioCard key={item.id} project={item} skills={skills} /> 
+                                    : <RepoCard key={item.id} repo={item} platform={activeTab} />
                             ))}
                         </div>
                         <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
