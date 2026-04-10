@@ -13,7 +13,7 @@ import {
     Bell,
     User,
     GraduationCap,
-    Briefcase,Wrench, MessageSquare
+    Briefcase,Cpu, MessageSquare, FolderKanban
 } from 'lucide-react';
 
 const navItems = [
@@ -44,7 +44,13 @@ const navItems = [
      {
         label: 'Skill',
         href: '/admin/skills',
-        icon: Wrench,
+        icon: Cpu,
+        exact: false,
+    },
+    {
+        label: 'Projects',
+        href: '/admin/projects',
+        icon: FolderKanban,
         exact: false,
     },
       {
