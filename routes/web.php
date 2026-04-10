@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ExperienceController as karirController;
 use App\Http\Controllers\Admin\SkillController;
 use App\Http\Controllers\Admin\MessageController;
+use App\Http\Controllers\Admin\ProjectController as PortoController;
 
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -88,4 +89,17 @@ Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function
     Route::delete('messages/bulk-destroy', [MessageController::class, 'bulkDestroy'])->name('messages.bulk-destroy');
     Route::post('messages/{message}/restore', [MessageController::class, 'restore'])->name('messages.restore');
     Route::delete('messages/{message}/force', [MessageController::class, 'forceDelete'])->name('messages.force-delete');
+
+
+    // ─── Project CRUD ─────────────────────────────────────────────────────────────
+    Route::get('projects',                   [PortoController::class, 'index'])->name('projects.index');
+    Route::get('projects/create',            [PortoController::class, 'create'])->name('projects.create');
+    Route::post('projects',                  [PortoController::class, 'store'])->name('projects.store');
+    Route::get('projects/{project}/edit',    [PortoController::class, 'edit'])->name('projects.edit');
+    Route::put('projects/{project}',         [PortoController::class, 'update'])->name('projects.update');
+    Route::delete('projects/{project}',      [PortoController::class, 'destroy'])->name('projects.destroy');
+    Route::delete('projects',                [PortoController::class, 'bulkDestroy'])->name('projects.bulk-destroy');
+
+    // Upload gambar dari TipTap editor (POST, butuh auth admin)
+    Route::post('projects/upload-image',     [PortoController::class, 'uploadImage'])->name('projects.upload-image');
 });

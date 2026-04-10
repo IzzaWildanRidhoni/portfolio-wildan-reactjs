@@ -10,13 +10,13 @@ return new class extends Migration {
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->text('description');
+            $table->longText('description')->nullable(); // HTML dari TipTap
             $table->string('thumbnail')->nullable();
-            $table->string('demo_url')->nullable();
-            $table->string('repo_url')->nullable();
+            $table->string('demo_url', 500)->nullable();
+            $table->string('repo_url', 500)->nullable();
             $table->json('tech_stack')->nullable();
             $table->boolean('is_featured')->default(false);
-            $table->integer('order')->default(0);
+            $table->unsignedInteger('order')->default(0);
             $table->timestamps();
         });
     }
