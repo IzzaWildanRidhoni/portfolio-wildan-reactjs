@@ -141,3 +141,92 @@ export function ContactPageSkeleton() {
     );
 }
 
+
+// Tambahkan di akhir file: resources/js/Components/Skeleton.jsx
+
+export function ProjectShowSkeleton() {
+    return (
+        <div className="mx-auto space-y-6">
+            {/* Back Button */}
+            <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                    <Skeleton className="h-4 w-4 rounded" />
+                    <Skeleton className="h-4 w-16" />
+                </div>
+            </div>
+
+            {/* Title Section */}
+            <div className="text-center space-y-2">
+                <Skeleton className="h-7 w-3/4 mx-auto" />
+                <Skeleton className="h-4 w-1/2 mx-auto" />
+            </div>
+
+            {/* Divider */}
+            <Skeleton className="h-px w-full" />
+
+            {/* Tech Stack Badges */}
+            <div className="flex flex-wrap justify-center gap-2">
+                <Skeleton className="h-6 w-20 rounded-full" />
+                <Skeleton className="h-6 w-16 rounded-full" />
+                <Skeleton className="h-6 w-24 rounded-full" />
+                <Skeleton className="h-6 w-14 rounded-full" />
+                <Skeleton className="h-6 w-18 rounded-full" />
+            </div>
+
+            {/* Thumbnail Image */}
+            <Skeleton className="h-64 sm:h-80 w-full rounded-xl" />
+
+            {/* Description Content */}
+            <div className="space-y-4">
+                {/* Paragraphs */}
+                <div className="space-y-2">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-[95%]" />
+                    <Skeleton className="h-4 w-[90%]" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-[85%]" />
+                </div>
+
+                {/* Code Block Mockup - Terminal Style */}
+                <div className="rounded-xl border border-white/[0.06] overflow-hidden">
+                    <div className="flex items-center gap-2 bg-white/[0.02] px-4 py-2 border-b border-white/[0.06]">
+                        <div className="flex gap-1.5">
+                            <Skeleton className="w-3 h-3 rounded-full" />
+                            <Skeleton className="w-3 h-3 rounded-full" />
+                            <Skeleton className="w-3 h-3 rounded-full" />
+                        </div>
+                        <Skeleton className="h-3 w-20 ml-2" />
+                    </div>
+                    <div className="p-4 space-y-2">
+                        <Skeleton className="h-3 w-3/4" />
+                        <Skeleton className="h-3 w-2/3" />
+                        <Skeleton className="h-3 w-full" />
+                        <Skeleton className="h-3 w-1/2" />
+                        <Skeleton className="h-3 w-5/6" />
+                    </div>
+                </div>
+
+                {/* More Paragraphs */}
+                <div className="space-y-2">
+                    <Skeleton className="h-4 w-[92%]" />
+                    <Skeleton className="h-4 w-[88%]" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-[78%]" />
+                </div>
+            </div>
+
+            {/* Gallery Section */}
+            <div className="space-y-4">
+                <Skeleton className="h-px w-full" />
+                <div className="space-y-3">
+                    <Skeleton className="h-5 w-32 mx-auto" />
+                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                            <Skeleton key={i} className="aspect-square rounded-xl" />
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}

@@ -4,8 +4,10 @@ import { ChevronLeft, ExternalLink, Github, X, ChevronRight, ChevronLeft as Chev
 import { useState, useEffect, useCallback, useRef } from 'react';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/atom-one-dark.css';
+import { ProjectShowSkeleton } from '@/Components/Skeleton';
 
 export default function ProjectShow({ project, skillsLookup = {} }) {
+     const [loading, setLoading] = useState(true);
     const techStack = project?.tech_stack || [];
     const portfolioImages = project?.images || [];
     
@@ -16,6 +18,7 @@ export default function ProjectShow({ project, skillsLookup = {} }) {
     const hasHighlighted = useRef(false);
     const contentRef = useRef(null);
 
+    
     const getSkillMeta = (techName) => {
         const skill = skillsLookup[techName];
         return {
@@ -24,6 +27,21 @@ export default function ProjectShow({ project, skillsLookup = {} }) {
         };
     };
     
+
+    // ✅ Loading state handling
+    useEffect(() => {
+        const t = setTimeout(() => setLoading(false), 700);
+        return () => clearTimeout(t);
+    }, []);
+
+    // ✅ FIX: Trigger re-highlight saat loading selesai DAN project tersedia
+    useEffect(() => {
+        if (!loading && project?.description && contentRef.current) {
+            hasHighlighted.current = false; // reset flag
+            setTimeout(() => applySyntaxHighlighting(), 0); // defer ke next tick
+        }
+    }, [loading, project?.description]); // ← tambahkan 'loading' sebagai dependency!
+
 
     // Fungsi untuk apply syntax highlighting
     const applySyntaxHighlighting = useCallback(() => {
@@ -173,7 +191,19 @@ export default function ProjectShow({ project, skillsLookup = {} }) {
         touchStart.current = null;
     };
 
-    if (!project) return <MainLayout><div className="p-6 text-white/60">Project not found</div></MainLayout>;
+     if (loading) {
+        return (
+            <MainLayout>
+                <ProjectShowSkeleton />
+            </MainLayout>
+        );
+    }
+
+    // ✅ Fallback jika project null
+    if (!project) {
+        return <MainLayout><div className="p-6 text-white/60">Project not found</div></MainLayout>;
+    }
+
 
     return (
         <MainLayout>
