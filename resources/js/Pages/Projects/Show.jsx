@@ -1,3 +1,4 @@
+// resources/js/Pages/Project/Show.jsx
 import { Link, router } from '@inertiajs/react';
 import MainLayout from '@/Layouts/MainLayout';
 import { ChevronLeft, ExternalLink, Github, X, ChevronRight, ChevronLeft as ChevronLeftIcon, Maximize2 } from 'lucide-react';
@@ -7,18 +8,16 @@ import 'highlight.js/styles/atom-one-dark.css';
 import { ProjectShowSkeleton } from '@/Components/Skeleton';
 
 export default function ProjectShow({ project, skillsLookup = {} }) {
-     const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
     const techStack = project?.tech_stack || [];
     const portfolioImages = project?.images || [];
     
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     
-    // Ref untuk track apakah sudah di-highlight
     const hasHighlighted = useRef(false);
     const contentRef = useRef(null);
 
-    
     const getSkillMeta = (techName) => {
         const skill = skillsLookup[techName];
         return {
@@ -26,29 +25,23 @@ export default function ProjectShow({ project, skillsLookup = {} }) {
             icon_url: skill?.icon_url || null,
         };
     };
-    
 
-    // ✅ Loading state handling
     useEffect(() => {
         const t = setTimeout(() => setLoading(false), 700);
         return () => clearTimeout(t);
     }, []);
 
-    // ✅ FIX: Trigger re-highlight saat loading selesai DAN project tersedia
     useEffect(() => {
         if (!loading && project?.description && contentRef.current) {
-            hasHighlighted.current = false; // reset flag
-            setTimeout(() => applySyntaxHighlighting(), 0); // defer ke next tick
+            hasHighlighted.current = false;
+            setTimeout(() => applySyntaxHighlighting(), 0);
         }
-    }, [loading, project?.description]); // ← tambahkan 'loading' sebagai dependency!
+    }, [loading, project?.description]);
 
-
-    // Fungsi untuk apply syntax highlighting
     const applySyntaxHighlighting = useCallback(() => {
         const content = contentRef.current;
         if (!content) return;
 
-        // Reset flag jika content berubah
         if (!hasHighlighted.current || content.querySelectorAll('.terminal-wrapper').length === 0) {
             content.querySelectorAll('pre code').forEach((block) => {
                 if (block.parentElement.classList.contains('terminal-wrapper')) return;
@@ -59,11 +52,9 @@ export default function ProjectShow({ project, skillsLookup = {} }) {
                 pre.classList.add('terminal-wrapper');
                 hljs.highlightElement(block);
                 
-                // Create terminal container
                 const terminalContainer = document.createElement('div');
                 terminalContainer.className = 'terminal-container';
                 
-                // Create header
                 const macHeader = document.createElement('div');
                 macHeader.className = 'terminal-header';
                 
@@ -75,7 +66,6 @@ export default function ProjectShow({ project, skillsLookup = {} }) {
                     <span class="terminal-btn terminal-btn-maximize"></span>
                 `;
                 
-                // Copy button
                 const copyBtn = document.createElement('button');
                 copyBtn.className = 'terminal-copy-btn';
                 copyBtn.type = 'button';
@@ -123,19 +113,15 @@ export default function ProjectShow({ project, skillsLookup = {} }) {
         }
     }, []);
 
-    // Apply highlighting setelah content di-render
     useEffect(() => {
         if (project?.description) {
-            // Reset flag saat description berubah
             hasHighlighted.current = false;
-            // Apply setelah render selesai
             setTimeout(() => {
                 applySyntaxHighlighting();
             }, 0);
         }
     }, [project?.description, applySyntaxHighlighting]);
 
-    // Re-apply highlighting saat lightbox state berubah
     useEffect(() => {
         if (hasHighlighted.current) {
             setTimeout(() => {
@@ -191,7 +177,7 @@ export default function ProjectShow({ project, skillsLookup = {} }) {
         touchStart.current = null;
     };
 
-     if (loading) {
+    if (loading) {
         return (
             <MainLayout>
                 <ProjectShowSkeleton />
@@ -199,11 +185,9 @@ export default function ProjectShow({ project, skillsLookup = {} }) {
         );
     }
 
-    // ✅ Fallback jika project null
     if (!project) {
         return <MainLayout><div className="p-6 text-white/60">Project not found</div></MainLayout>;
     }
-
 
     return (
         <MainLayout>
@@ -383,35 +367,42 @@ export default function ProjectShow({ project, skillsLookup = {} }) {
                 )}
 
                 {project?.thumbnail && (
-                    <div className="relative group rounded-xl overflow-hidden border border-white/[0.07]">
-                        <img src={project.thumbnail} alt={project.title} className="w-full h-auto object-contain bg-[#0a0a0a]" loading="lazy" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="space-y-3">
+                        {/* Thumbnail Image - Tanpa overlay hover */}
+                        <div className="relative rounded-xl overflow-hidden border border-white/[0.07]">
+                            <img 
+                                src={project.thumbnail} 
+                                alt={project.title} 
+                                className="w-full h-auto object-contain bg-[#0a0a0a]" 
+                                loading="lazy" 
+                            />
+                        </div>
+
+                        {/* ✅ TOMBOL SELALU TAMPIL - Mobile & Desktop */}
                         {(project?.demo_url || project?.repo_url) && (
-                            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                            <div className="flex flex-wrap gap-3 justify-center">
                                 {project.demo_url && (
-                                    <a href={project.demo_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-white/90 hover:bg-white text-[#1a1a2e] text-[13px] font-medium px-4 py-2 rounded-lg transition-colors shadow-lg backdrop-blur-sm">
-                                        <ExternalLink className="w-3.5 h-3.5" /> Live Demo
+                                    <a 
+                                        href={project.demo_url} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer" 
+                                        className="inline-flex items-center justify-center gap-2 bg-white/90 hover:bg-white text-[#1a1a2e] text-[13px] font-medium px-5 py-2.5 rounded-lg shadow-lg active:scale-[0.98] transition-all hover:shadow-xl"
+                                    >
+                                        <ExternalLink className="w-4 h-4" /> Live Demo
                                     </a>
                                 )}
                                 {project.repo_url && (
-                                    <a href={project.repo_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-black/60 hover:bg-black/80 border border-white/20 text-white text-[13px] px-4 py-2 rounded-lg transition-colors backdrop-blur-sm">
-                                        <Github className="w-3.5 h-3.5" /> Source
+                                    <a 
+                                        href={project.repo_url} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer" 
+                                        className="inline-flex items-center justify-center gap-2 bg-white/[0.08] hover:bg-white/[0.12] border border-white/20 text-white text-[13px] font-medium px-5 py-2.5 rounded-lg active:scale-[0.98] transition-all"
+                                    >
+                                        <Github className="w-4 h-4" /> Source Code
                                     </a>
                                 )}
                             </div>
                         )}
-                        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-3 sm:hidden">
-                            {project.demo_url && (
-                                <a href={project.demo_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-white/90 text-[#1a1a2e] text-[12px] font-medium px-3 py-1.5 rounded-lg shadow-lg">
-                                    <ExternalLink className="w-3 h-3" /> Demo
-                                </a>
-                            )}
-                            {project.repo_url && (
-                                <a href={project.repo_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 bg-black/60 border border-white/20 text-white text-[12px] px-3 py-1.5 rounded-lg backdrop-blur-sm">
-                                    <Github className="w-3 h-3" /> Code
-                                </a>
-                            )}
-                        </div>
                     </div>
                 )}
 
@@ -428,7 +419,14 @@ export default function ProjectShow({ project, skillsLookup = {} }) {
                             <h3 className="text-[16px] font-semibold text-white text-center mb-4">Portfolio Preview</h3>
                             <div className="gallery-grid">
                                 {portfolioImages.map((img, index) => (
-                                    <div key={img.id || index} className="gallery-item" onClick={() => openLightbox(index)} role="button" tabIndex={0} onKeyDown={(e) => e.key === 'Enter' && openLightbox(index)}>
+                                    <div 
+                                        key={img.id || index} 
+                                        className="gallery-item" 
+                                        onClick={() => openLightbox(index)} 
+                                        role="button" 
+                                        tabIndex={0} 
+                                        onKeyDown={(e) => e.key === 'Enter' && openLightbox(index)}
+                                    >
                                         <img src={img.url} alt={img.caption || `Preview ${index + 1}`} loading="lazy" />
                                         <div className="gallery-overlay">
                                             <span><Maximize2 className="w-3 h-3 inline mr-1" />Lihat</span>
@@ -442,7 +440,12 @@ export default function ProjectShow({ project, skillsLookup = {} }) {
             </div>
 
             {lightboxOpen && portfolioImages[currentImageIndex] && (
-                <div className="lightbox-overlay" onClick={closeLightbox} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+                <div 
+                    className="lightbox-overlay" 
+                    onClick={closeLightbox} 
+                    onTouchStart={handleTouchStart} 
+                    onTouchEnd={handleTouchEnd}
+                >
                     <button className="lightbox-close" onClick={closeLightbox} aria-label="Close">
                         <X className="w-5 h-5" />
                     </button>
@@ -456,7 +459,12 @@ export default function ProjectShow({ project, skillsLookup = {} }) {
                             </button>
                         </>
                     )}
-                    <img src={portfolioImages[currentImageIndex].url} alt={portfolioImages[currentImageIndex].caption || `Image ${currentImageIndex + 1}`} className="lightbox-image" onClick={(e) => e.stopPropagation()} />
+                    <img 
+                        src={portfolioImages[currentImageIndex].url} 
+                        alt={portfolioImages[currentImageIndex].caption || `Image ${currentImageIndex + 1}`} 
+                        className="lightbox-image" 
+                        onClick={(e) => e.stopPropagation()} 
+                    />
                     {portfolioImages[currentImageIndex].caption && (
                         <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 max-w-md text-center">
                             <p className="text-white/90 text-sm bg-black/50 px-4 py-2 rounded-lg backdrop-blur-sm">
