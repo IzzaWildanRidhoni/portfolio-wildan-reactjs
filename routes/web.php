@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\SkillController;
 use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\ProjectController as PortoController;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\BlogController;
 
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -116,4 +117,16 @@ Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function
 
     Route::post('/projects/{project}/images/reorder', [PortoController::class, 'reorderPortfolioImages'])
         ->name('admin.projects.images.reorder');
+
+    // ─── Blog CRUD ─────────────────────────────────────────────────────────────
+    Route::get('blogs',                   [BlogController::class, 'index'])->name('blogs.index');
+    Route::get('blogs/create',            [BlogController::class, 'create'])->name('blogs.create');
+    Route::post('blogs',                  [BlogController::class, 'store'])->name('blogs.store');
+    Route::get('blogs/{blog}/edit',       [BlogController::class, 'edit'])->name('blogs.edit');
+    Route::put('blogs/{blog}',            [BlogController::class, 'update'])->name('blogs.update');
+    Route::delete('blogs/{blog}',         [BlogController::class, 'destroy'])->name('blogs.destroy');
+    Route::delete('blogs',                [BlogController::class, 'bulkDestroy'])->name('blogs.bulk-destroy');
+
+    // Upload gambar dari TipTap editor
+    Route::post('blogs/upload-image',     [BlogController::class, 'uploadImage'])->name('blogs.upload-image');
 });

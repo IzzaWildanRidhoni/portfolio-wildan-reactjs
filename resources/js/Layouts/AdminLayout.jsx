@@ -13,7 +13,7 @@ import {
     Bell,
     User,
     GraduationCap,
-    Briefcase,Cpu, MessageSquare, FolderKanban
+    Briefcase,Cpu, MessageSquare, FolderKanban, FileText
 } from 'lucide-react';
 
 const navItems = [
@@ -52,6 +52,12 @@ const navItems = [
         href: '/admin/projects',
         icon: FolderKanban,
         exact: false,
+    },
+    {
+        label:    'Blog',              // ✅ NEW: Blog
+        href:     '/admin/blogs',
+        icon:     FileText,           // ✅ Icon: FileText / Newspaper / PenSquare
+        exact:    false,
     },
       {
         label: 'Messages',
