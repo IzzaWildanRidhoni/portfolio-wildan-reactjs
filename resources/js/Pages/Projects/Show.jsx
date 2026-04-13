@@ -181,8 +181,10 @@ export default function ProjectShow({ project, skillsLookup = {} }) {
                 }
             `}</style>
 
-            <div className="space-y-6  mx-auto ">
-                {/* Back Button */}
+         {/* === CONTENT WRAPPER - CENTERED === */}
+            <div className=" mx-auto  space-y-6">
+                
+                {/* Back Button - Left aligned for navigation */}
                 <Link
                     href="/proyek"
                     className="inline-flex items-center gap-1.5 text-[13px] text-white/40 hover:text-white/70 transition-colors"
@@ -191,8 +193,8 @@ export default function ProjectShow({ project, skillsLookup = {} }) {
                     Kembali
                 </Link>
 
-                {/* Title */}
-                <div>
+                {/* === Title - Centered === */}
+                <div className="text-center">
                     <h1 className="text-[22px] sm:text-[26px] font-bold text-white tracking-tight">
                         {project?.title || 'Untitled Project'}
                     </h1>
@@ -200,9 +202,9 @@ export default function ProjectShow({ project, skillsLookup = {} }) {
 
                 <div className="border-t border-white/[0.07]" />
 
-                {/* Tech Stack */}
+                {/* === Tech Stack - Centered === */}
                 {techStack.length > 0 && (
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap justify-center items-center gap-2">
                         <span className="text-[13px] text-white/40 mr-1">Teknologi :</span>
                         {techStack.map((tech, i) => {
                             const { color, icon_url } = getSkillMeta(tech);
@@ -225,42 +227,85 @@ export default function ProjectShow({ project, skillsLookup = {} }) {
                     </div>
                 )}
 
-                {/* Action Buttons */}
-                {(project?.demo_url || project?.repo_url) && (
-                    <div className="flex gap-3 flex-wrap">
-                        {project.demo_url && (
-                            <a href={project.demo_url} target="_blank" rel="noopener noreferrer"
-                                className="inline-flex items-center gap-2 bg-white/[0.08] hover:bg-white/[0.12] border border-white/[0.1] text-white text-[13px] font-medium px-4 py-2 rounded-lg transition-colors">
-                                <ExternalLink className="w-3.5 h-3.5" /> Live Demo
-                            </a>
-                        )}
-                        {project.repo_url && (
-                            <a href={project.repo_url} target="_blank" rel="noopener noreferrer"
-                                className="inline-flex items-center gap-2 bg-white/[0.05] hover:bg-white/[0.08] border border-white/[0.08] text-white/70 text-[13px] px-4 py-2 rounded-lg transition-colors">
-                                <Github className="w-3.5 h-3.5" /> Source Code
-                            </a>
-                        )}
-                    </div>
-                )}
-
-                {/* Main Thumbnail - Compact */}
+                {/* === Main Thumbnail with Overlay Buttons === */}
                 {project?.thumbnail && (
-                    <div className="rounded-xl overflow-hidden border border-white/[0.07]">
+                    <div className="relative group rounded-xl overflow-hidden border border-white/[0.07]">
+                        {/* Full size image - no crop, respect original aspect ratio */}
                         <img 
                             src={project.thumbnail} 
                             alt={project.title} 
-                            className="w-full h-auto max-h-[300px] sm:max-h-[400px] object-cover"
+                            className="w-full h-auto object-contain bg-[#0a0a0a]"
                             loading="lazy"
                         />
+                        
+                        {/* Overlay Gradient */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        
+                        {/* Action Buttons - Overlay on Image (Bottom Center) */}
+                        {(project?.demo_url || project?.repo_url) && (
+                            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0">
+                                {project.demo_url && (
+                                    <a 
+                                        href={project.demo_url} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-2 bg-white/90 hover:bg-white text-[#1a1a2e] text-[13px] font-medium px-4 py-2 rounded-lg transition-colors shadow-lg backdrop-blur-sm"
+                                    >
+                                        <ExternalLink className="w-3.5 h-3.5" /> Live Demo
+                                    </a>
+                                )}
+                                {project.repo_url && (
+                                    <a 
+                                        href={project.repo_url} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-2 bg-black/60 hover:bg-black/80 border border-white/20 text-white text-[13px] px-4 py-2 rounded-lg transition-colors backdrop-blur-sm"
+                                    >
+                                        <Github className="w-3.5 h-3.5" /> Source
+                                    </a>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Mobile: Always show buttons (no hover on touch) */}
+                        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-3 sm:hidden">
+                            {project.demo_url && (
+                                <a 
+                                    href={project.demo_url} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 bg-white/90 text-[#1a1a2e] text-[12px] font-medium px-3 py-1.5 rounded-lg shadow-lg"
+                                >
+                                    <ExternalLink className="w-3 h-3" /> Demo
+                                </a>
+                            )}
+                            {project.repo_url && (
+                                <a 
+                                    href={project.repo_url} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 bg-black/60 border border-white/20 text-white text-[12px] px-3 py-1.5 rounded-lg backdrop-blur-sm"
+                                >
+                                    <Github className="w-3 h-3" /> Code
+                                </a>
+                            )}
+                        </div>
                     </div>
                 )}
 
-                
-                {/* Portfolio Gallery - Sneak Peek */}
+                {/* === Description === */}
+                {project?.description && (
+                    <>
+                        <div className="border-t border-white/[0.07]" />
+                        <div className="project-content" dangerouslySetInnerHTML={{ __html: project.description }} />
+                    </>
+                )}
+
+                {/* === Portfolio Gallery - Sneak Peek === */}
                 {portfolioImages.length > 0 && (
                     <>
                         <div className="border-t border-white/[0.07] pt-6">
-                            <h3 className="text-[16px] font-semibold text-white mb-4">Sneak Peek</h3>
+                            <h3 className="text-[16px] font-semibold text-white text-center mb-4">Portfolio Preview</h3>
                             <div className="gallery-grid">
                                 {portfolioImages.map((img, index) => (
                                     <div 
@@ -285,15 +330,6 @@ export default function ProjectShow({ project, skillsLookup = {} }) {
                         </div>
                     </>
                 )}
-
-                {/* Description */}
-                {project?.description && (
-                    <>
-                        <div className="border-t border-white/[0.07]" />
-                        <div className="project-content" dangerouslySetInnerHTML={{ __html: project.description }} />
-                    </>
-                )}
-
             </div>
 
             {/* LIGHTBOX MODAL */}
