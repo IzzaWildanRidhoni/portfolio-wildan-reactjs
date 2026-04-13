@@ -103,4 +103,17 @@ Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function
 
     // Upload gambar dari TipTap editor (POST, butuh auth admin)
     Route::post('projects/upload-image',     [PortoController::class, 'uploadImage'])->name('projects.upload-image');
+
+    // ── Portfolio Gallery Images ──────────────────────────────────────────────────
+    Route::post('/projects/{project}/images', [PortoController::class, 'uploadPortfolioImages'])
+        ->name('admin.projects.images.store');
+
+    Route::patch('/projects/{project}/images/{image}', [PortoController::class, 'updatePortfolioImage'])
+        ->name('admin.projects.images.update');
+
+    Route::delete('/projects/{project}/images/{image}', [PortoController::class, 'destroyPortfolioImage'])
+        ->name('admin.projects.images.destroy');
+
+    Route::post('/projects/{project}/images/reorder', [PortoController::class, 'reorderPortfolioImages'])
+        ->name('admin.projects.images.reorder');
 });

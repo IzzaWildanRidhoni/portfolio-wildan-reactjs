@@ -16,8 +16,17 @@ class Project extends Model
         'is_featured',
         'order'
     ];
+
     protected $casts = [
         'tech_stack' => 'array',
         'is_featured' => 'boolean',
     ];
+
+    /**
+     * Portfolio images (unlimited)
+     */
+    public function images()
+    {
+        return $this->hasMany(ProjectImage::class)->orderBy('order');
+    }
 }
