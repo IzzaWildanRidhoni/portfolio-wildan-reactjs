@@ -183,7 +183,7 @@ export default function BlogShow({ blog, related = [] }) {
                 .blog-content td, .blog-content th { border: 1px solid rgba(255,255,255,0.06); padding: 9px 13px; vertical-align: top; }
                 .blog-content th { background: rgba(255,255,255,0.04); font-weight: 600; color: rgba(255,255,255,0.7); text-align: left; }
                 .blog-content code:not(pre code) { background: rgba(99,102,241,0.12); color: #a5b4fc; padding: 0.15em 0.45em; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 0.87em; border: 1px solid rgba(99,102,241,0.2); }
-                .blog-content .terminal-wrapper { margin: 1.5em 0; }
+                .blog-content .terminal-wrapper { margin: 0 0; }
 
                 .terminal-container { position: relative; background: #1e1e1e; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
                 .terminal-header { background: #2d2d2d; padding: 5px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
