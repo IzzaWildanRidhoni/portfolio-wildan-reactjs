@@ -21,6 +21,7 @@ class Blog extends Model
         'published_at',
         'order',
         'views',
+        'blog_category_id',
     ];
 
     protected $casts = [
@@ -33,7 +34,7 @@ class Blog extends Model
     protected function slug(): Attribute
     {
         return Attribute::make(
-            set: fn ($value, $attributes) => $value ?? Str::slug($attributes['title']),
+            set: fn($value, $attributes) => $value ?? Str::slug($attributes['title']),
         );
     }
 
@@ -41,14 +42,19 @@ class Blog extends Model
     public function scopePublished($query)
     {
         return $query->where('is_published', true)
-                    ->whereNotNull('published_at')
-                    ->where('published_at', '<=', now());
+            ->whereNotNull('published_at')
+            ->where('published_at', '<=', now());
     }
 
     // Scope untuk ordered blogs
     public function scopeOrdered($query)
     {
         return $query->orderBy('order', 'asc')
-                    ->orderBy('published_at', 'desc');
+            ->orderBy('published_at', 'desc');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(BlogCategory::class, 'blog_category_id');
     }
 }

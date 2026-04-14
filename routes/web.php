@@ -126,7 +126,8 @@ Route::prefix('admin')->name('admin.')->middleware('admin.auth')->group(function
     Route::put('blogs/{blog}',            [BlogController::class, 'update'])->name('blogs.update');
     Route::delete('blogs/{blog}',         [BlogController::class, 'destroy'])->name('blogs.destroy');
     Route::delete('blogs',                [BlogController::class, 'bulkDestroy'])->name('blogs.bulk-destroy');
-
     // Upload gambar dari TipTap editor
     Route::post('blogs/upload-image',     [BlogController::class, 'uploadImage'])->name('blogs.upload-image');
+    Route::get('blog-categories',        [BlogController::class, 'getCategories'])->name('blogs.categories.index');
+    Route::post('blog-categories',       [BlogController::class, 'storeCategory'])->name('blogs.categories.store');
 });

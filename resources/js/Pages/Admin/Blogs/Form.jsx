@@ -466,8 +466,242 @@ function RichTextEditor({ value, onChange, error, uploadUrl = '/admin/blogs/uplo
     );
 }
 
+// ─── Creatable Category Select ───────────────────────────────────────────────
+function CategorySelect({ value, onChange, error }) {
+    const [categories, setCategories]   = useState([]);
+    const [inputValue, setInputValue]   = useState('');
+    const [isOpen, setIsOpen]           = useState(false);
+    const [isCreating, setIsCreating]   = useState(false);
+    const [loading, setLoading]         = useState(true);
+    const containerRef                  = useRef(null);
+    const inputRef                      = useRef(null);
+
+    // Fetch kategori dari server
+    const fetchCategories = useCallback(async () => {
+        try {
+            const res = await fetch('/admin/blog-categories', {
+                headers: { 'Accept': 'application/json' },
+                credentials: 'same-origin',
+            });
+            const data = await res.json();
+            setCategories(data);
+        } catch (e) {
+            console.error('Failed to fetch categories', e);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    useEffect(() => { fetchCategories(); }, [fetchCategories]);
+
+    // Tutup dropdown saat klik luar
+    useEffect(() => {
+        const handler = (e) => {
+            if (containerRef.current && !containerRef.current.contains(e.target)) {
+                setIsOpen(false);
+                setInputValue('');
+            }
+        };
+        document.addEventListener('mousedown', handler);
+        return () => document.removeEventListener('mousedown', handler);
+    }, []);
+
+    const selected = categories.find(c => String(c.id) === String(value));
+
+    const filtered = inputValue.trim()
+        ? categories.filter(c => c.name.toLowerCase().includes(inputValue.toLowerCase()))
+        : categories;
+
+    const canCreate = inputValue.trim().length > 0 &&
+        !categories.some(c => c.name.toLowerCase() === inputValue.trim().toLowerCase());
+
+    const getCsrf = () =>
+        document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+    const handleCreate = async () => {
+        const name = inputValue.trim();
+        if (!name || isCreating) return;
+        setIsCreating(true);
+        try {
+            const res = await fetch('/admin/blog-categories', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': getCsrf(),
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({ name, color: pendingColor }),
+            });
+            const newCat = await res.json();
+            setCategories(prev => [...prev, newCat]);
+            onChange(newCat.id);
+            setIsOpen(false);
+            setInputValue('');
+        } catch (e) {
+            console.error('Failed to create category', e);
+        } finally {
+            setIsCreating(false);
+        }
+    };
+
+    const handleSelect = (cat) => {
+        onChange(cat.id);
+        setIsOpen(false);
+        setInputValue('');
+    };
+
+    const handleClear = (e) => {
+        e.stopPropagation();
+        onChange(null);
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (canCreate) handleCreate();
+            else if (filtered.length > 0) handleSelect(filtered[0]);
+        }
+        if (e.key === 'Escape') {
+            setIsOpen(false);
+            setInputValue('');
+        }
+    };
+
+    // Warna-warna pilihan saat create
+    const COLORS = ['#6366f1','#10b981','#f59e0b','#ef4444','#3b82f6','#8b5cf6','#ec4899','#14b8a6'];
+    const [pendingColor, setPendingColor] = useState('#6366f1');
+
+    return (
+        <div ref={containerRef} className="relative">
+            {/* Trigger */}
+            <div
+                onClick={() => { setIsOpen(o => !o); setTimeout(() => inputRef.current?.focus(), 50); }}
+                className={`flex items-center gap-2 w-full min-h-[40px] bg-white/[0.04] border rounded-lg px-3 py-1.5 cursor-pointer transition-colors ${
+                    error ? 'border-red-500/50' : isOpen ? 'border-indigo-500/50' : 'border-white/[0.08] hover:border-white/[0.16]'
+                }`}
+            >
+                {/* Badge selected */}
+                {selected ? (
+                    <span className="flex items-center gap-1.5 text-[12px] px-2 py-0.5 rounded-md border"
+                        style={{
+                            background: selected.color + '20',
+                            borderColor: selected.color + '40',
+                            color: selected.color,
+                        }}>
+                        <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: selected.color }} />
+                        {selected.name}
+                    </span>
+                ) : (
+                    <span className="text-[13px] text-white/25 flex-1">Pilih atau buat kategori...</span>
+                )}
+
+                <div className="flex items-center gap-1 ml-auto flex-shrink-0">
+                    {selected && (
+                        <button type="button" onClick={handleClear}
+                            className="w-4 h-4 flex items-center justify-center text-white/25 hover:text-white/60 transition-colors rounded">
+                            <X className="w-3 h-3" />
+                        </button>
+                    )}
+                    <ChevronDown className={`w-3.5 h-3.5 text-white/25 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                </div>
+            </div>
+
+            {/* Dropdown */}
+            {isOpen && (
+                <div className="absolute z-50 mt-1.5 w-full bg-[#1a1a1a] border border-white/[0.1] rounded-xl shadow-2xl overflow-hidden">
+                    {/* Search input */}
+                    <div className="flex items-center gap-2 px-3 py-2 border-b border-white/[0.06]">
+                        <Hash className="w-3.5 h-3.5 text-white/25 flex-shrink-0" />
+                        <input
+                            ref={inputRef}
+                            type="text"
+                            value={inputValue}
+                            onChange={e => setInputValue(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                            placeholder="Cari atau ketik nama baru..."
+                            className="flex-1 bg-transparent text-[13px] text-white placeholder-white/25 focus:outline-none"
+                        />
+                        {inputValue && (
+                            <button type="button" onClick={() => setInputValue('')}
+                                className="text-white/25 hover:text-white/50">
+                                <X className="w-3 h-3" />
+                            </button>
+                        )}
+                    </div>
+
+                    {/* List */}
+                    <div className="max-h-[200px] overflow-y-auto">
+                        {loading ? (
+                            <div className="flex items-center justify-center py-6">
+                                <div className="w-4 h-4 border-2 border-white/20 border-t-white/60 rounded-full animate-spin" />
+                            </div>
+                        ) : (
+                            <>
+                                {filtered.length === 0 && !canCreate && (
+                                    <p className="text-center text-[12px] text-white/25 py-5">Tidak ada kategori</p>
+                                )}
+                                {filtered.map(cat => (
+                                    <button
+                                        key={cat.id}
+                                        type="button"
+                                        onClick={() => handleSelect(cat)}
+                                        className={`w-full flex items-center gap-2.5 px-3 py-2 text-left transition-colors hover:bg-white/[0.04] ${
+                                            String(value) === String(cat.id) ? 'bg-indigo-500/[0.08]' : ''
+                                        }`}
+                                    >
+                                        <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: cat.color }} />
+                                        <span className="text-[13px] text-white/75">{cat.name}</span>
+                                        {String(value) === String(cat.id) && (
+                                            <CheckCircle2 className="w-3.5 h-3.5 text-indigo-400 ml-auto" />
+                                        )}
+                                    </button>
+                                ))}
+
+                                {/* Create new option */}
+                                {canCreate && (
+                                    <div className="border-t border-white/[0.06]">
+                                        {/* Color picker */}
+                                        <div className="flex items-center gap-2 px-3 pt-2.5 pb-1">
+                                            <span className="text-[10.5px] text-white/25">Warna:</span>
+                                            <div className="flex gap-1">
+                                                {COLORS.map(col => (
+                                                    <button key={col} type="button"
+                                                        onClick={() => setPendingColor(col)}
+                                                        className={`w-4 h-4 rounded-full transition-transform ${pendingColor === col ? 'scale-125 ring-1 ring-white/40' : 'opacity-60 hover:opacity-100'}`}
+                                                        style={{ background: col }}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={handleCreate}
+                                            disabled={isCreating}
+                                            className="w-full flex items-center gap-2.5 px-3 py-2.5 text-left hover:bg-indigo-500/[0.08] transition-colors disabled:opacity-50"
+                                        >
+                                            {isCreating
+                                                ? <div className="w-3.5 h-3.5 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin flex-shrink-0" />
+                                                : <Plus className="w-3.5 h-3.5 text-indigo-400 flex-shrink-0" />
+                                            }
+                                            <span className="text-[12.5px] text-indigo-300">
+                                                Buat <strong>"{inputValue.trim()}"</strong>
+                                            </span>
+                                            <span className="ml-auto w-3 h-3 rounded-full flex-shrink-0" style={{ background: pendingColor }} />
+                                        </button>
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
 // ─── Main Form Page ─────────────────────────────────────────────────────────────
-export default function Form({ blog, mode }) {
+export default function Form({ blog, mode, categories = [] }) {
     const isEdit = mode === 'edit';
     const [previewUrl, setPreviewUrl] = useState(null);
 
@@ -483,6 +717,7 @@ export default function Form({ blog, mode }) {
         published_at:     blog?.published_at ? blog.published_at.slice(0, 16) : '',
         order:            blog?.order ?? '',
         thumbnail:        null,
+        blog_category_id: blog?.blog_category_id ?? '',
     });
 
     const handleFileChange = (file) => {
@@ -678,6 +913,15 @@ export default function Form({ blog, mode }) {
                                     placeholder="judul-artikel-anda" error={errors.slug} />
                             </FormField>
                         </div>
+
+                        {/* Category */}
+                        <FormField label="Kategori" error={errors.blog_category_id}>
+                            <CategorySelect
+                                value={data.blog_category_id}
+                                onChange={val => setData('blog_category_id', val)}
+                                error={errors.blog_category_id}
+                            />
+                        </FormField>
 
                         {/* Excerpt */}
                         <FormField label="Excerpt / Ringkasan" error={errors.excerpt} hint="maks. 500 karakter">

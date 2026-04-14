@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use App\Models\BlogCategory;
 
 class BlogController extends Controller
 {
@@ -25,8 +26,9 @@ class BlogController extends Controller
     public function create()
     {
         return Inertia::render('Admin/Blogs/Form', [
-            'blog' => null,
-            'mode' => 'create',
+            'blog'       => null,
+            'mode'       => 'create',
+            'categories' => BlogCategory::orderBy('order')->get(['id', 'name', 'color']),
         ]);
     }
 
@@ -45,6 +47,7 @@ class BlogController extends Controller
             'published_at'     => 'nullable|date',
             'order'            => 'nullable|integer|min:0',
             'thumbnail'        => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
+            'blog_category_id' => 'nullable|exists:blog_categories,id',
         ]);
 
         // Auto-generate slug
@@ -76,11 +79,11 @@ class BlogController extends Controller
     public function edit(Blog $blog)
     {
         return Inertia::render('Admin/Blogs/Form', [
-            'blog' => $blog,
-            'mode' => 'edit',
+            'blog'       => $blog,
+            'mode'       => 'edit',
+            'categories' => BlogCategory::orderBy('order')->get(['id', 'name', 'color']),
         ]);
     }
-
     public function update(Request $request, Blog $blog)
     {
         $validated = $request->validate([
@@ -96,6 +99,7 @@ class BlogController extends Controller
             'published_at'     => 'nullable|date',
             'order'            => 'nullable|integer|min:0',
             'thumbnail'        => 'nullable|image|mimes:jpeg,png,jpg,webp|max:3072',
+            'blog_category_id' => 'nullable|exists:blog_categories,id',
         ]);
 
         // Auto-generate slug jika diubah
@@ -174,7 +178,6 @@ class BlogController extends Controller
             $url = Storage::disk('public')->url($path);
 
             return response()->json(['url' => $url, 'success' => true], 200);
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
@@ -184,5 +187,42 @@ class BlogController extends Controller
             \Log::error('Blog image upload error: ' . $e->getMessage());
             return response()->json(['message' => 'Server error: ' . $e->getMessage()], 500);
         }
+    }
+
+    /**
+     * Ambil semua kategori (untuk dropdown async)
+     */
+    public function getCategories()
+    {
+        $categories = BlogCategory::orderBy('order')->orderBy('name')
+            ->get(['id', 'name', 'slug', 'color']);
+
+        return response()->json($categories);
+    }
+
+    /**
+     * Buat kategori baru secara inline dari form blog
+     */
+    public function storeCategory(Request $request)
+    {
+        $validated = $request->validate([
+            'name'  => 'required|string|max:100',
+            'color' => 'nullable|string|max:20',
+        ]);
+
+        // Cek apakah sudah ada (case-insensitive)
+        $existing = BlogCategory::whereRaw('LOWER(name) = ?', [strtolower($validated['name'])])->first();
+        if ($existing) {
+            return response()->json($existing);
+        }
+
+        $category = BlogCategory::create([
+            'name'  => $validated['name'],
+            'slug'  => Str::slug($validated['name']),
+            'color' => $validated['color'] ?? '#6366f1',
+            'order' => BlogCategory::count() + 1,
+        ]);
+
+        return response()->json($category, 201);
     }
 }
