@@ -14,12 +14,17 @@ class BlogController extends Controller
 {
     public function index()
     {
-        $blogs = Blog::orderBy('order', 'asc')
+        $blogs = Blog::with('category')  // eager load relasi
+            ->orderBy('order', 'asc')
             ->orderBy('created_at', 'desc')
             ->get();
 
+        $categories = BlogCategory::orderBy('order')->orderBy('name')
+            ->get(['id', 'name', 'color']);
+
         return Inertia::render('Admin/Blogs/Index', [
-            'blogs' => $blogs,
+            'blogs'      => $blogs,
+            'categories' => $categories,
         ]);
     }
 

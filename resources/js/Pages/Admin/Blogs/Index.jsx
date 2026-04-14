@@ -6,26 +6,29 @@ import {
     FilterBar, BulkActionBar, TableCheckbox, ThumbnailCell,
     SortableTh, ActionButtons, ClientPagination,
 } from '@/Components/Admin/UI';
-import { Plus, ImageOff, Eye, Calendar, Tag, Globe } from 'lucide-react';
+import { Plus, ImageOff, Eye, Calendar, Tag } from 'lucide-react';
 
 const paginate = (array, page, perPage) =>
     array.slice((page - 1) * perPage, page * perPage);
 
-export default function BlogsIndex({ blogs }) {
+export default function BlogsIndex({ blogs, categories = [] }) {
     const allData = Array.isArray(blogs) ? blogs : [];
 
-    const [search, setSearch]           = useState('');
-    const [status, setStatus]           = useState('');
-    const [sortBy, setSortBy]           = useState('order');
-    const [sortDir, setSortDir]         = useState('asc');
-    const [perPage, setPerPage]         = useState(10);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [selected, setSelected]       = useState([]);
+    const [search, setSearch]             = useState('');
+    const [status, setStatus]             = useState('');
+    const [categoryId, setCategoryId]     = useState('');
+    const [sortBy, setSortBy]             = useState('order');
+    const [sortDir, setSortDir]           = useState('asc');
+    const [perPage, setPerPage]           = useState(10);
+    const [currentPage, setCurrentPage]   = useState(1);
+    const [selected, setSelected]         = useState([]);
     const [deleteTarget, setDeleteTarget] = useState(null);
-    const [bulkConfirm, setBulkConfirm] = useState(false);
-    const [deleting, setDeleting]       = useState(false);
+    const [bulkConfirm, setBulkConfirm]   = useState(false);
+    const [deleting, setDeleting]         = useState(false);
 
-    useEffect(() => { setCurrentPage(1); }, [search, status, sortBy, sortDir, perPage]);
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [search, status, categoryId, sortBy, sortDir, perPage]);
 
     const processedData = useMemo(() => {
         let result = [...allData];
@@ -38,8 +41,13 @@ export default function BlogsIndex({ blogs }) {
                 b.tags?.some(t => t.toLowerCase().includes(q))
             );
         }
+
         if (status === 'published') result = result.filter(b => b.is_published);
-        if (status === 'draft') result = result.filter(b => !b.is_published);
+        if (status === 'draft')     result = result.filter(b => !b.is_published);
+
+        if (categoryId) {
+            result = result.filter(b => String(b.blog_category_id) === String(categoryId));
+        }
 
         result.sort((a, b) => {
             let valA = a[sortBy] ?? '', valB = b[sortBy] ?? '';
@@ -48,20 +56,39 @@ export default function BlogsIndex({ blogs }) {
             if (valA > valB) return sortDir === 'asc' ? 1 : -1;
             return 0;
         });
+
         return result;
-    }, [allData, search, status, sortBy, sortDir]);
+    }, [allData, search, status, categoryId, sortBy, sortDir]);
 
-    const paginatedData = paginate(processedData, currentPage, perPage);
-    const totalPages = Math.ceil(processedData.length / perPage);
-    const hasActiveFilters = search || status;
+    const paginatedData  = paginate(processedData, currentPage, perPage);
+    const totalPages     = Math.ceil(processedData.length / perPage);
+    const hasActiveFilters = search || status || categoryId;
 
-    const handleSort = (field) => { setSortDir(p => sortBy === field && p === 'asc' ? 'desc' : 'asc'); setSortBy(field); };
-    const handleFilter = (key, val) => { if (key === 'status') setStatus(val); };
-    const handleReset = () => { setSearch(''); setStatus(''); setSortBy('order'); setSortDir('asc'); setPerPage(10); setCurrentPage(1); };
+    const handleSort = (field) => {
+        setSortDir(p => sortBy === field && p === 'asc' ? 'desc' : 'asc');
+        setSortBy(field);
+    };
+
+    const handleFilter = (key, val) => {
+        if (key === 'status')   setStatus(val);
+        if (key === 'category') setCategoryId(val);
+    };
+
+    const handleReset = () => {
+        setSearch('');
+        setStatus('');
+        setCategoryId('');
+        setSortBy('order');
+        setSortDir('asc');
+        setPerPage(10);
+        setCurrentPage(1);
+    };
 
     const isAllSelected = paginatedData.length > 0 && selected.length === paginatedData.length;
-    const toggleAll = () => setSelected(isAllSelected ? [] : paginatedData.map(b => b.id));
-    const toggleOne = (id) => setSelected(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+    const toggleAll     = () => setSelected(isAllSelected ? [] : paginatedData.map(b => b.id));
+    const toggleOne     = (id) => setSelected(prev =>
+        prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    );
 
     const handleDelete = () => {
         setDeleting(true);
@@ -80,7 +107,9 @@ export default function BlogsIndex({ blogs }) {
 
     const formatDate = (date) => {
         if (!date) return '—';
-        return new Date(date).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+        return new Date(date).toLocaleDateString('id-ID', {
+            day: '2-digit', month: 'short', year: 'numeric',
+        });
     };
 
     return (
@@ -88,7 +117,7 @@ export default function BlogsIndex({ blogs }) {
             <FlashToast />
             <div className="space-y-5">
 
-                {/* Header */}
+                {/* ── Header ── */}
                 <div className="flex items-center justify-between">
                     <div>
                         <h2 className="text-[20px] font-bold text-white">Blog Posts</h2>
@@ -99,26 +128,38 @@ export default function BlogsIndex({ blogs }) {
                     </Link>
                 </div>
 
-                {/* Filters */}
+                {/* ── Filters ── */}
                 <FilterBar
                     search={search} onSearchChange={setSearch}
                     filters={[
                         {
-                            key: 'status', value: status,
+                            key: 'status',
+                            value: status,
                             options: [
-                                { value: 'published', label: '✅ Published' },
-                                { value: 'draft', label: '📝 Draft' },
+                                { value: 'published', label: 'Published' },
+                                { value: 'draft',     label: 'Draft' },
                             ],
                             placeholder: 'Semua Status',
                         },
+                        {
+                            key: 'category',
+                            value: categoryId,
+                            options: categories.map(c => ({
+                                value: String(c.id),
+                                label: c.name,
+                            })),
+                            placeholder: 'Semua Kategori',
+                        },
                     ]}
-                    onFilterChange={handleFilter} onReset={handleReset}
-                    perPage={perPage} onPerPageChange={(v) => { setPerPage(v); setCurrentPage(1); }}
+                    onFilterChange={handleFilter}
+                    onReset={handleReset}
+                    perPage={perPage}
+                    onPerPageChange={(v) => { setPerPage(v); setCurrentPage(1); }}
                     hasActiveFilters={hasActiveFilters}
                     searchPlaceholder="Cari judul, excerpt, tags..."
                 />
 
-                {/* Bulk Actions */}
+                {/* ── Bulk Actions ── */}
                 <BulkActionBar
                     count={selected.length}
                     onCancel={() => setSelected([])}
@@ -126,7 +167,7 @@ export default function BlogsIndex({ blogs }) {
                     loading={deleting}
                 />
 
-                {/* Table */}
+                {/* ── Table ── */}
                 <div className="bg-[#111111] border border-white/[0.07] rounded-xl overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full">
@@ -137,18 +178,19 @@ export default function BlogsIndex({ blogs }) {
                                     </th>
                                     <th className="px-4 py-3 text-left text-[11px] font-medium text-white/30 uppercase">#</th>
                                     <th className="w-16 px-4 py-3 text-left text-[11px] font-medium text-white/30 uppercase">Thumb</th>
-                                    <SortableTh label="Judul" field="title" currentSort={sortBy} sortDir={sortDir} onSort={handleSort} />
+                                    <SortableTh label="Judul"     field="title"        currentSort={sortBy} sortDir={sortDir} onSort={handleSort} />
+                                    <th className="px-4 py-3 text-left text-[11px] font-medium text-white/30 uppercase">Kategori</th>
                                     <th className="px-4 py-3 text-left text-[11px] font-medium text-white/30 uppercase">Tags</th>
-                                    <SortableTh label="Status" field="is_published" currentSort={sortBy} sortDir={sortDir} onSort={handleSort} />
+                                    <SortableTh label="Status"    field="is_published" currentSort={sortBy} sortDir={sortDir} onSort={handleSort} />
                                     <SortableTh label="Published" field="published_at" currentSort={sortBy} sortDir={sortDir} onSort={handleSort} />
-                                    <SortableTh label="Views" field="views" currentSort={sortBy} sortDir={sortDir} onSort={handleSort} />
+                                    <SortableTh label="Views"     field="views"        currentSort={sortBy} sortDir={sortDir} onSort={handleSort} />
                                     <th className="px-4 py-3 text-right text-[11px] font-medium text-white/30 uppercase">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-white/[0.04]">
                                 {paginatedData.length === 0 ? (
                                     <tr>
-                                        <td colSpan={9} className="text-center py-16 text-white/25 text-[13px]">
+                                        <td colSpan={10} className="text-center py-16 text-white/25 text-[13px]">
                                             {hasActiveFilters ? 'Tidak ada data yang cocok' : 'Belum ada artikel blog'}
                                         </td>
                                     </tr>
@@ -157,55 +199,104 @@ export default function BlogsIndex({ blogs }) {
                                         key={blog.id}
                                         className={`transition-colors hover:bg-white/[0.02] ${selected.includes(blog.id) ? 'bg-indigo-500/[0.04]' : ''}`}
                                     >
+                                        {/* Checkbox */}
                                         <td className="w-12 px-4 py-3.5">
-                                            <TableCheckbox checked={selected.includes(blog.id)} onChange={() => toggleOne(blog.id)} />
+                                            <TableCheckbox
+                                                checked={selected.includes(blog.id)}
+                                                onChange={() => toggleOne(blog.id)}
+                                            />
                                         </td>
+
+                                        {/* No */}
                                         <td className="px-4 py-3.5">
                                             <span className="text-white/25 font-mono text-[12px]">
                                                 {(currentPage - 1) * perPage + idx + 1}
                                             </span>
                                         </td>
+
+                                        {/* Thumbnail */}
                                         <td className="px-4 py-3.5">
                                             <ThumbnailCell src={blog.thumbnail} alt={blog.title} fallbackIcon={ImageOff} />
                                         </td>
-                                        <td className="px-4 py-3.5 max-w-[240px]">
-                                            <p className="text-white/85 font-medium text-[13px] line-clamp-1">{blog.title}</p>
+
+                                        {/* Judul + excerpt */}
+                                        <td className="px-4 py-3.5 max-w-[220px]">
+                                            <p className="text-white/85 font-medium text-[13px] line-clamp-1">
+                                                {blog.title}
+                                            </p>
                                             {blog.excerpt && (
                                                 <p className="text-[11px] text-white/25 mt-0.5 line-clamp-1">
                                                     {blog.excerpt.replace(/<[^>]*>/g, ' ').substring(0, 70)}...
                                                 </p>
                                             )}
                                         </td>
+
+                                        {/* Kategori */}
                                         <td className="px-4 py-3.5">
-                                            <div className="flex flex-wrap gap-1 max-w-[180px]">
+                                            {blog.category ? (
+                                                <span
+                                                    className="inline-flex items-center gap-1.5 text-[11px] px-2 py-0.5 rounded-md border whitespace-nowrap"
+                                                    style={{
+                                                        background:   blog.category.color + '20',
+                                                        borderColor:  blog.category.color + '40',
+                                                        color:        blog.category.color,
+                                                    }}
+                                                >
+                                                    <span
+                                                        className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                                                        style={{ background: blog.category.color }}
+                                                    />
+                                                    {blog.category.name}
+                                                </span>
+                                            ) : (
+                                                <span className="text-[11px] text-white/20">—</span>
+                                            )}
+                                        </td>
+
+                                        {/* Tags */}
+                                        <td className="px-4 py-3.5">
+                                            <div className="flex flex-wrap gap-1 max-w-[160px]">
                                                 {(blog.tags || []).slice(0, 3).map(tag => (
-                                                    <span key={tag} className="inline-flex items-center text-[10px] px-1.5 py-0.5 rounded bg-white/[0.06] text-white/50 border border-white/[0.06]">
+                                                    <span
+                                                        key={tag}
+                                                        className="inline-flex items-center text-[10px] px-1.5 py-0.5 rounded bg-white/[0.06] text-white/50 border border-white/[0.06]"
+                                                    >
                                                         <Tag className="w-2.5 h-2.5 mr-0.5" />{tag}
                                                     </span>
                                                 ))}
                                                 {(blog.tags || []).length > 3 && (
-                                                    <span className="text-[10px] text-white/30">+{blog.tags.length - 3}</span>
+                                                    <span className="text-[10px] text-white/30">
+                                                        +{blog.tags.length - 3}
+                                                    </span>
                                                 )}
                                             </div>
                                         </td>
+
+                                        {/* Status */}
                                         <td className="px-4 py-3.5">
                                             {blog.is_published
                                                 ? <StatusBadge label="Published" customClass="bg-emerald-500/15 text-emerald-400 border-emerald-500/20" />
-                                                : <StatusBadge label="Draft" customClass="bg-white/[0.06] text-white/40 border-white/[0.1]" />
+                                                : <StatusBadge label="Draft"     customClass="bg-white/[0.06] text-white/40 border-white/[0.1]" />
                                             }
                                         </td>
+
+                                        {/* Published At */}
                                         <td className="px-4 py-3.5">
-                                            <div className="flex items-center gap-1.5 text-[12px] text-white/40">
-                                                <Calendar className="w-3 h-3" />
+                                            <div className="flex items-center gap-1.5 text-[12px] text-white/40 whitespace-nowrap">
+                                                <Calendar className="w-3 h-3 flex-shrink-0" />
                                                 {formatDate(blog.published_at)}
                                             </div>
                                         </td>
+
+                                        {/* Views */}
                                         <td className="px-4 py-3.5">
                                             <div className="flex items-center gap-1.5 text-[12px] text-white/40">
-                                                <Eye className="w-3.5 h-3.5" />
+                                                <Eye className="w-3.5 h-3.5 flex-shrink-0" />
                                                 {blog.views || 0}
                                             </div>
                                         </td>
+
+                                        {/* Aksi */}
                                         <td className="px-4 py-3.5 text-right">
                                             <ActionButtons
                                                 editUrl={`/admin/blogs/${blog.id}/edit`}
@@ -217,25 +308,33 @@ export default function BlogsIndex({ blogs }) {
                             </tbody>
                         </table>
                     </div>
+
+                    {/* Pagination */}
                     <div className="px-4 pb-4">
                         <ClientPagination
-                            currentPage={currentPage} totalPages={totalPages}
-                            onPageChange={setCurrentPage} totalItems={processedData.length}
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={setCurrentPage}
+                            totalItems={processedData.length}
                             perPage={perPage}
                         />
                     </div>
                 </div>
             </div>
 
-            {/* Delete modals */}
+            {/* ── Delete Modals ── */}
             <ConfirmModal
-                open={!!deleteTarget} onClose={() => setDeleteTarget(null)}
-                onConfirm={handleDelete} loading={deleting}
+                open={!!deleteTarget}
+                onClose={() => setDeleteTarget(null)}
+                onConfirm={handleDelete}
+                loading={deleting}
                 message="Blog ini akan dihapus permanen beserta thumbnail-nya."
             />
             <ConfirmModal
-                open={bulkConfirm} onClose={() => setBulkConfirm(false)}
-                onConfirm={handleBulkDelete} loading={deleting}
+                open={bulkConfirm}
+                onClose={() => setBulkConfirm(false)}
+                onConfirm={handleBulkDelete}
+                loading={deleting}
                 title={`Hapus ${selected.length} Blog?`}
                 message="Semua artikel yang dipilih akan dihapus permanen."
             />
