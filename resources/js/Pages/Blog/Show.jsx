@@ -6,45 +6,9 @@ import { ChevronLeft, Calendar, Eye, Tag, Clock, Rss, ArrowRight } from 'lucide-
 import { useState, useEffect, useRef, useCallback } from 'react';
 import hljs from 'highlight.js';
 import 'highlight.js/styles/atom-one-dark.css';
-import { Skeleton } from '@/Components/Skeleton';
+import { BlogShowSkeleton } from '@/Components/Skeleton';
 
-// ── Skeleton ──────────────────────────────────────────────────────────────────
-export function BlogShowSkeleton() {
-    return (
-        <div className="space-y-6">
-            <Skeleton className="h-4 w-28" />
-            {/* Meta */}
-            <div className="flex gap-3">
-                <Skeleton className="h-5 w-20 rounded-full" />
-                <Skeleton className="h-5 w-28" />
-                <Skeleton className="h-5 w-20" />
-            </div>
-            {/* Title */}
-            <div className="space-y-2">
-                <Skeleton className="h-8 w-full" />
-                <Skeleton className="h-8 w-4/5" />
-            </div>
-            {/* Excerpt */}
-            <Skeleton className="h-5 w-full" />
-            <Skeleton className="h-5 w-3/4" />
-            {/* Thumbnail */}
-            <Skeleton className="w-full h-[320px] rounded-xl" />
-            <Skeleton className="h-px w-full" />
-            {/* Content */}
-            <div className="space-y-3">
-                {Array.from({ length: 8 }).map((_, i) => (
-                    <Skeleton key={i} className={`h-4 ${i % 4 === 3 ? 'w-3/5' : i % 3 === 2 ? 'w-11/12' : 'w-full'}`} />
-                ))}
-            </div>
-            <Skeleton className="h-[120px] w-full rounded-lg" />
-            <div className="space-y-3">
-                {Array.from({ length: 5 }).map((_, i) => (
-                    <Skeleton key={i} className={`h-4 ${i % 3 === 2 ? 'w-4/5' : 'w-full'}`} />
-                ))}
-            </div>
-        </div>
-    );
-}
+
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const formatDate = (d) => {
@@ -244,21 +208,15 @@ export default function BlogShow({ blog, related = [] }) {
 
             <div className="space-y-6">
                 {/* Back */}
-                <Link href="/blog"
-                    className="inline-flex items-center gap-1.5 text-[13px] text-white/38 hover:text-white/70 transition-colors">
-                    <ChevronLeft className="w-4 h-4" /> Kembali ke Blog
+                <Link href="/proyek" className="inline-flex items-center gap-1.5 text-[13px] text-white/40 hover:text-white/70 transition-colors">
+                    <ChevronLeft className="w-4 h-4" /> Kembali
                 </Link>
+
 
                 {/* Meta: category + date + read time + views */}
                 <div className="flex flex-wrap items-center gap-2.5 text-[12px] text-white/35">
-                    {blog.category && (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full font-medium text-[11.5px]"
-                            style={{ background: blog.category.color + '22', color: blog.category.color }}>
-                            <span className="w-1.5 h-1.5 rounded-full" style={{ background: blog.category.color }} />
-                            {blog.category.name}
-                        </span>
-                    )}
                     <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" />{formatDate(blog.published_at)}</span>
+                    <span className="flex items-center gap-1"><Tag className="w-3.5 h-3.5" />{blog.category.name}</span>
                     <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" />{readTime} menit baca</span>
                     <span className="flex items-center gap-1 sm:ml-auto"><Eye className="w-3.5 h-3.5" />{blog.views ?? 0} views</span>
                 </div>

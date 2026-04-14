@@ -71,6 +71,43 @@ export function AboutPageSkeleton() {
     );
 }
 
+export function BlogShowSkeleton() {
+    return (
+        <div className="space-y-6">
+            <Skeleton className="h-4 w-28" />
+            {/* Meta */}
+            <div className="flex gap-3">
+                <Skeleton className="h-5 w-20 rounded-full" />
+                <Skeleton className="h-5 w-28" />
+                <Skeleton className="h-5 w-20" />
+            </div>
+            {/* Title */}
+            <div className="space-y-2">
+                <Skeleton className="h-8 w-full" />
+                <Skeleton className="h-8 w-4/5" />
+            </div>
+            {/* Excerpt */}
+            <Skeleton className="h-5 w-full" />
+            <Skeleton className="h-5 w-3/4" />
+            {/* Thumbnail */}
+            <Skeleton className="w-full h-[320px] rounded-xl" />
+            <Skeleton className="h-px w-full" />
+            {/* Content */}
+            <div className="space-y-3">
+                {Array.from({ length: 8 }).map((_, i) => (
+                    <Skeleton key={i} className={`h-4 ${i % 4 === 3 ? 'w-3/5' : i % 3 === 2 ? 'w-11/12' : 'w-full'}`} />
+                ))}
+            </div>
+            <Skeleton className="h-[120px] w-full rounded-lg" />
+            <div className="space-y-3">
+                {Array.from({ length: 5 }).map((_, i) => (
+                    <Skeleton key={i} className={`h-4 ${i % 3 === 2 ? 'w-4/5' : 'w-full'}`} />
+                ))}
+            </div>
+        </div>
+    );
+}
+
 export function ProjectsPageSkeleton() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
