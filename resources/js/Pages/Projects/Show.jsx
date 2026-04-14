@@ -228,7 +228,7 @@ export default function ProjectShow({ project, skillsLookup = {} }) {
                 
                 .terminal-header {
                     background: #2d2d2d;
-                    padding: 12px 16px;
+                    padding: 5px 16px;
                     border-bottom: 1px solid rgba(255,255,255,0.05);
                     display: flex;
                     justify-content: space-between;
@@ -271,7 +271,7 @@ export default function ProjectShow({ project, skillsLookup = {} }) {
                 
                 .terminal-container pre {
                     background: #1e1e1e;
-                    padding: 20px 24px;
+                    padding: 5px 10px;
                     margin: 0;
                     overflow-x: auto;
                 }

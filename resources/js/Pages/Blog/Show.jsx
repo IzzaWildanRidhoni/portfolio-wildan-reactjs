@@ -186,7 +186,7 @@ export default function BlogShow({ blog, related = [] }) {
                 .blog-content .terminal-wrapper { margin: 1.5em 0; }
 
                 .terminal-container { position: relative; background: #1e1e1e; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
-                .terminal-header { background: #2d2d2d; padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
+                .terminal-header { background: #2d2d2d; padding: 5px 16px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
                 .terminal-buttons { display: flex; gap: 8px; }
                 .terminal-btn { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
                 .terminal-btn-close { background: #ff5f56; border: 1px solid #e0443e; }
@@ -195,7 +195,7 @@ export default function BlogShow({ blog, related = [] }) {
                 .terminal-copy-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); padding: 5px 10px; border-radius: 6px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
                 .terminal-copy-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
                 .terminal-copy-btn .check-icon { color: #22c55e; }
-                .terminal-container pre { background: #1e1e1e; padding: 18px 22px; margin: 0; overflow-x: auto; }
+                .terminal-container pre { background: #1e1e1e; padding: 0 10px; margin: 0; overflow-x: auto; }
                 .terminal-container code { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; line-height: 1.65; color: #d4d4d4; display: block; white-space: pre; }
                 .hljs { background: transparent !important; }
                 .hljs-keyword { color: #c678dd; } .hljs-string { color: #98c379; } .hljs-comment { color: #5c6370; font-style: italic; }
