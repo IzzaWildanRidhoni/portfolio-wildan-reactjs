@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\ProjectController as PortoController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\BlogController;
+use App\Http\Controllers\BlogController as BlogUser;
 
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -27,6 +28,8 @@ Route::get('/pencapaian', [AchievementController::class, 'index'])->name('achiev
 Route::get('/statistik', [DashboardController::class, 'index'])->name('dashboard');
 Route::get('/kontak', [ContactController::class, 'index'])->name('contact');
 Route::post('/kontak', [ContactController::class, 'store'])->name('contact.store');
+Route::get('/blog', [BlogUser::class, 'index'])->name('blog.index');
+Route::get('/blog/{blog:slug}', [BlogUser::class, 'show'])->name('blog.show');
 
 
 

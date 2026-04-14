@@ -5,7 +5,7 @@ import {
     User,
     Award,
     FolderOpen,
-    LayoutDashboard,
+    BookOpen,
     Phone,
     Sun,
     Moon,
@@ -22,7 +22,8 @@ const navItems = [
     { label: 'Tentang',    href: '/tentang',    icon: User },
     { label: 'Pencapaian', href: '/pencapaian', icon: Award },
     { label: 'Proyek',     href: '/proyek',     icon: FolderOpen },
-    { label: 'Statistik',  href: '/statistik',  icon: LayoutDashboard },
+    { label: 'Blog',  href: '/blog',  icon: BookOpen },
+    // { label: 'Statistik',  href: '/statistik',  icon: LayoutDashboard },
     { label: 'Kontak',     href: '/kontak',     icon: Phone },
 ];
 
