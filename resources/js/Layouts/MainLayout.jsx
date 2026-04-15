@@ -136,7 +136,6 @@ export default function MainLayout({ children }) {
                             const active = isActive(href);
                             return (
                                 <Link key={href} href={href} className={`group relative flex items-center gap-3 px-3 py-[9px] rounded-[10px] text-[12.5px] transition-all duration-200 overflow-hidden border ${active ? 'bg-primary/10 text-foreground font-medium border-primary/20' : 'text-muted-foreground border-transparent hover:text-foreground hover:bg-secondary/50 hover:border-border hover:translate-x-0.5'}`}>
-                                    <span className={`absolute left-0 top-[20%] bottom-[20%] w-[2.5px] rounded-r-full bg-primary transition-all duration-200 ${active ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-50'}`} />
                                     <Icon className={`w-[15px] h-[15px] flex-shrink-0 origin-center transition-all duration-300 ${active ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground group-hover:scale-110 group-hover:-rotate-12'}`} />
                                     <span className="flex-1">{label}</span>
                                     <span className={`text-[10px] text-muted-foreground transition-all duration-200 ${active ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-1'}`}>→</span>
