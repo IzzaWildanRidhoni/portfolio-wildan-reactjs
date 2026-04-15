@@ -208,7 +208,7 @@ export default function BlogShow({ blog, related = [] }) {
 
             <div className="space-y-6">
                 {/* Back */}
-                <Link href="/proyek" className="inline-flex items-center gap-1.5 text-[13px] text-white/40 hover:text-white/70 transition-colors">
+                <Link href="/blog" className="inline-flex items-center gap-1.5 text-[13px] text-white/40 hover:text-white/70 transition-colors">
                     <ChevronLeft className="w-4 h-4" /> Kembali
                 </Link>
 

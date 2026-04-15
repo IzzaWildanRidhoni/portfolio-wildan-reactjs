@@ -134,23 +134,20 @@ function FeaturedCard({ blog }) {
 
     return (
         <Link href={`/blog/${blog.slug}`}
-            className="group relative flex flex-col sm:flex-row rounded-xl border border-white/[0.07] overflow-hidden bg-white/[0.02] hover:border-indigo-500/25 hover:bg-white/[0.035] transition-all duration-200 sm:h-[210px]">
+                className="group relative flex flex-col sm:flex-row rounded-xl border border-white/[0.07] overflow-hidden bg-white/[0.02] hover:bg-white/[0.035] transition-all duration-200 sm:h-[210px]">
             <div className="relative sm:w-[320px] h-[170px] sm:h-full flex-shrink-0 overflow-hidden bg-white/[0.03]">
                 <img src={src} alt={blog.title} loading="lazy" onError={() => setErr(true)}
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/25 pointer-events-none" />
-                <span className="absolute top-2.5 left-2.5 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-500 text-white shadow-lg">
-                    ✦ Terbaru
+                <span className="absolute top-2.5 left-2.5 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-yellow-400 text-slate-900 shadow-lg">
+                    New
                 </span>
             </div>
             <div className="flex flex-col justify-center p-5 gap-2.5 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                    {blog.category && (
-                        <span className="text-[10.5px] font-semibold px-2 py-0.5 rounded-full"
-                            style={{ background: blog.category.color + '22', color: blog.category.color }}>
-                            {blog.category.name}
-                        </span>
-                    )}
+                     <span className="text-[11px] text-white/30 flex items-center gap-1">
+                        <Tag className="w-3 h-3" />{blog.category.name}
+                    </span>
                     <span className="text-[11px] text-white/30 flex items-center gap-1">
                         <Calendar className="w-3 h-3" />{formatDate(blog.published_at)}
                     </span>
@@ -158,7 +155,7 @@ function FeaturedCard({ blog }) {
                         <Clock className="w-3 h-3" />{estimateRead(blog.content)} mnt baca
                     </span>
                 </div>
-                <h2 className="text-[16px] sm:text-[18px] font-bold text-white line-clamp-2 leading-snug group-hover:text-indigo-300 transition-colors">
+                <h2 className="text-[16px] sm:text-[18px] font-bold text-white line-clamp-2 ">
                     {blog.title}
                 </h2>
                 <p className="text-[12.5px] text-white/45 line-clamp-2 leading-relaxed">{excerpt}</p>
@@ -189,16 +186,10 @@ function BlogCard({ blog }) {
                 <img src={src} alt={blog.title} loading="lazy" onError={() => setErr(true)}
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none" />
-                {blog.category && (
-                    <span className="absolute top-2.5 left-2.5 text-[10px] font-semibold px-2 py-0.5 rounded-full"
-                        style={{ background: blog.category.color + 'cc', color: '#fff' }}>
-                        {blog.category.name}
-                    </span>
-                )}
             </div>
             {/* Content */}
             <div className="flex flex-col flex-1 p-4 gap-2">
-                <h3 className="text-[13px] font-semibold text-white/88 line-clamp-2 leading-snug group-hover:text-indigo-300 transition-colors">
+                <h3 className="text-[13px] font-semibold text-white/88 line-clamp-2">
                     {blog.title}
                 </h3>
                 <p className="text-[12px] text-white/38 leading-relaxed line-clamp-2 flex-1 min-h-[2.4rem]">
@@ -256,7 +247,7 @@ function Pagination({ current, total, onChange }) {
                     : <button key={p} onClick={() => onChange(p)}
                         className={`w-8 h-8 flex items-center justify-center rounded-lg text-[11.5px] transition-colors ${
                             current === p
-                                ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/35'
+                                 ? 'bg-yellow-400/20 text-yellow-200 border border-yellow-400/50'
                                 : 'text-white/38 hover:text-white/68 hover:bg-white/[0.05]'
                         }`}>{p}</button>
             )}
