@@ -99,7 +99,7 @@ function SearchInput({ value, onChange }) {
             <input
                 type="text" value={value} onChange={e => onChange(e.target.value)}
                 placeholder="Cari artikel, tags, kategori..."
-                className="w-full h-9 pl-9 pr-8 bg-white/[0.04] border border-white/[0.08] rounded-lg text-[12.5px] text-white/70 placeholder-white/25 focus:outline-none focus:border-indigo-400/50 focus:ring-1 focus:ring-indigo-400/15 transition-all"
+                className="w-full h-9 pl-9 pr-8 bg-white/[0.04] border border-white/[0.08] rounded-lg text-[12.5px] text-white/70 placeholder-white/25 focus:outline-none focus:border-[#3F3F3F] focus:ring-1 focus:ring-[#3F3F3F]/30 transition-all"
             />
             {value && (
                 <button onClick={() => onChange('')}
@@ -113,20 +113,15 @@ function SearchInput({ value, onChange }) {
 
 function CategoryPill({ cat, active, onClick }) {
     return (
-        <button onClick={onClick}
+        <button 
+            onClick={onClick}
             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11.5px] font-medium border transition-all whitespace-nowrap ${
                 active
-                    ? ''
+                    ? 'bg-yellow-400/20 border-yellow-400/50 text-yellow-200'
                     : 'bg-white/[0.03] border-white/[0.08] text-white/40 hover:border-white/20 hover:text-white/65'
             }`}
-            style={active ? {
-                background: cat.color + '22',
-                borderColor: cat.color + '55',
-                color: cat.color,
-            } : {}}
+            // ✅ Hapus inline style, semua diatur via className
         >
-            <span className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                style={{ background: active ? cat.color : 'rgba(255,255,255,0.2)' }} />
             {cat.name}
         </button>
     );
@@ -344,7 +339,7 @@ export default function BlogIndex({ blogs = [], categories = [] }) {
                         <button onClick={() => setActiveCat('')}
                             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11.5px] font-medium border transition-all ${
                                 !activeCat
-                                    ? 'bg-indigo-500/18 border-indigo-500/40 text-indigo-300'
+                                    ? 'bg-yellow-400/20 border-yellow-400/50 text-yellow-200'
                                     : 'bg-white/[0.03] border-white/[0.08] text-white/40 hover:border-white/20 hover:text-white/65'
                             }`}>
                             <BookOpen className="w-3 h-3" /> Semua
@@ -387,10 +382,10 @@ export default function BlogIndex({ blogs = [], categories = [] }) {
                         {hasFilters && ' ditemukan'}
                     </span>
                     {hasFilters && (
-                        <button onClick={() => { setSearch(''); setActiveCat(''); setActiveTag(''); }}
-                            className="flex items-center gap-1 text-indigo-400/80 hover:text-indigo-300 transition-colors">
-                            <X className="w-3 h-3" /> Reset filter
-                        </button>
+                     <button onClick={() => { setSearch(''); setActiveCat(''); setActiveTag(''); }}
+                        className="flex items-center gap-1 text-yellow-400/80 hover:text-yellow-300 transition-colors">
+                        <X className="w-3 h-3" /> Reset filter
+                    </button>
                     )}
                 </div>
 
