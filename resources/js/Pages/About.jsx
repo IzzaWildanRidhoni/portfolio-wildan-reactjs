@@ -175,9 +175,9 @@ export default function About({ profile, experiences, educations }) {
 
                 {/* Bio */}
                 <div className="space-y-4 text-[13.5px] text-white/60 leading-[1.75]">
-                    <p>Saya {displayProfile.name}, seorang Software Engineer yang berbasis di Jambi, berdedikasi untuk membangun solusi digital yang berdampak. Saya spesialis dalam pengembangan platform web yang skalabel dan aplikasi mobile menggunakan tech stack modern, termasuk Next.js, TypeScript, dan pengembangan Android native dengan Kotlin.</p>
-                    <p>Fokus utama saya adalah merancang arsitektur perangkat lunak yang tidak hanya berfungsi tetapi juga terstruktur dengan baik, mudah dipelihara, dan skalabel untuk memenuhi kebutuhan bisnis. Saya percaya bahwa kode berkualitas tinggi harus berjalan beriringan dengan efisiensi sistem dan kejelasan logis.</p>
-                    <p>Saya memadukan keahlian teknis dengan komunikasi proaktif, berpikir kritis, dan manajemen waktu yang efektif. Saya berkembang dalam lingkungan kolaboratif dan memanfaatkan keterampilan kepemimpinan untuk memastikan setiap proyek memberikan hasil optimal dan dampak nyata.</p>
+                   <p>Saya Izza Wildan, seorang Web Developer yang berasal dari Temanggung, Jawa Tengah, dengan minat besar dalam membangun solusi digital yang bermanfaat dan berdampak.
+                    Saya fokus pada pengembangan aplikasi yang terstruktur dengan baik, mudah digunakan, dan dapat berkembang sesuai kebutuhan. Bagi saya, kualitas dan kejelasan dalam sebuah sistem adalah hal yang penting.</p>
+                    <p>Saya juga terbiasa bekerja secara kolaboratif, memiliki komunikasi yang baik, serta mampu mengatur waktu dengan efektif untuk menyelesaikan setiap proyek secara optimal.</p>
 
                     <div className="pt-1">
                         <p className="text-white/50 mb-2">Salam hangat,</p>
