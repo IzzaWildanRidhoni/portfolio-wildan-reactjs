@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, usePage } from '@inertiajs/react';
+import PageTransition from '@/Components/PageTransition';
 import {
     Home,
     User,
@@ -228,11 +229,14 @@ export default function MainLayout({ children }) {
             )}
 
             {/* ── MAIN CONTENT ── */}
-            <main className={`flex-1 min-h-screen pb-[72px] lg:pb-0 overflow-x-hidden transition-all duration-300 ${
+           <main className={`flex-1 min-h-screen pb-[72px] lg:pb-0 overflow-x-hidden transition-all duration-300 ${
                 navLayout === 'topbar' ? 'lg:pt-[10px]' : ''
             }`}>
                 <div className="mx-auto px-5 lg:px-10 py-8 w-full">
-                    {children}
+                    {/* ✅ Wrap children dengan PageTransition */}
+                    <PageTransition>
+                        {children}
+                    </PageTransition>
                 </div>
             </main>
 
