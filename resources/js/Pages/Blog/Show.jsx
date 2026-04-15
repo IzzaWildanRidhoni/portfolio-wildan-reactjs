@@ -44,7 +44,7 @@ function RelatedCard({ blog }) {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
             </div>
             <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
-                <p className="text-[12.5px] font-medium text-white/78 line-clamp-2 leading-snug group-hover:text-indigo-300 transition-colors">
+                <p className="text-[12.5px] font-medium text-white/78 line-clamp-2 leading-snug group-hover:text-yellow-300 transition-colors">
                     {blog.title}
                 </p>
                 <div className="flex items-center gap-2 mt-1.5 text-[10.5px] text-white/28">
@@ -228,7 +228,7 @@ export default function BlogShow({ blog, related = [] }) {
 
                 {/* Excerpt */}
                 {blog.excerpt && (
-                    <p className="text-[14px] text-white/48 leading-relaxed border-l-2 border-indigo-500/40 pl-4 italic">
+                    <p className="text-[14px] text-white/48 leading-relaxed border-l-2 border-yellow-500/40 pl-4 italic">
                         {blog.excerpt}
                     </p>
                 )}
@@ -257,7 +257,7 @@ export default function BlogShow({ blog, related = [] }) {
                             <span className="text-[12px] text-white/28">Tags:</span>
                             {blog.tags.map(tag => (
                                 <Link key={tag} href={`/blog?tag=${encodeURIComponent(tag)}`}
-                                    className="inline-flex items-center gap-1 text-[11.5px] px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/[0.08] text-white/48 hover:border-indigo-500/40 hover:text-indigo-300 transition-all">
+                                    className="inline-flex items-center gap-1 text-[11.5px] px-2.5 py-1 rounded-full bg-white/[0.05] border border-white/[0.08] text-white/48 hover:border-yellow-500/40 hover:text-yellow-300 transition-all">
                                     <Tag className="w-3 h-3" />#{tag}
                                 </Link>
                             ))}
@@ -272,10 +272,10 @@ export default function BlogShow({ blog, related = [] }) {
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <p className="text-[13px] font-semibold text-white/55 flex items-center gap-2">
-                                    <Rss className="w-4 h-4 text-indigo-400" /> Artikel Terkait
+                                    <Rss className="w-4 h-4 text-yellow-400" /> Artikel Terkait
                                 </p>
                                 <Link href="/blog"
-                                    className="flex items-center gap-1 text-[12px] text-indigo-400/70 hover:text-indigo-300 transition-colors">
+                                    className="flex items-center gap-1 text-[12px] text-yellow-400/70 hover:text-yellow-300 transition-colors">
                                     Lihat semua <ArrowRight className="w-3.5 h-3.5" />
                                 </Link>
                             </div>
