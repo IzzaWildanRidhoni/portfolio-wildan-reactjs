@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+
+  # ─── PHP + Laravel App ───────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: portfolio_app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+      - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    depends_on:
+      - mysql
+    networks:
+      - portfolio_network
+
+  # ─── Nginx Web Server ────────────────────────────────────────────
+  nginx:
+    image: nginx:alpine
+    container_name: portfolio_nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - portfolio_network
+
+  # ─── MySQL Database ──────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: portfolio_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: db_wildanporto
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_PASSWORD: secret
+      MYSQL_USER: portfolio_user
+    ports:
+      - "3307:3306"       # port 3307 agar tidak bentrok dengan MySQL lokal
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - portfolio_network
+
+  # ─── Node.js (Vite dev server) ───────────────────────────────────
+  node:
+    image: node:20-alpine
+    container_name: portfolio_node
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "5173:5173"
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    networks:
+      - portfolio_network
+
+volumes:
+  mysql_data:
+
+networks:
+  portfolio_network:
+    driver: bridge

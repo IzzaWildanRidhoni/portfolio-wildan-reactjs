@@ -16,4 +16,11 @@ export default defineConfig({
             '@': path.resolve(__dirname, './resources/js'),
         },
     },
+    server: {
+        host: '0.0.0.0',   // agar bisa diakses dari luar container
+        port: 5173,
+        hmr: {
+            host: 'localhost',  // browser konek ke localhost
+        },
+    },
 });
